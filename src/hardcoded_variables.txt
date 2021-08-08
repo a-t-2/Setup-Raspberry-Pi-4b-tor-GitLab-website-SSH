@@ -1,0 +1,4 @@
+LOG_LOCATION=src/logs/
+TOR_CONFIG_LOCATION=/etc/tor/torrc
+HIDDENSERVICEDIR_SSH=/var/lib/tor/
+HIDDENSERVICENAME_SSH=other_hidden_service
