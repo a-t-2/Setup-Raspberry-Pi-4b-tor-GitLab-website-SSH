@@ -3,7 +3,7 @@
 load 'libs/bats-support/load'
 load 'libs/bats-assert/load'
 
-source src/ssh_tor.sh
+source src/install_ssh_over_tor.sh
 source test/helper.sh
 source test/hardcoded_testdata.txt
 
