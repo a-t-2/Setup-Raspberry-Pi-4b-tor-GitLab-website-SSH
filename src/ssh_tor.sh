@@ -108,9 +108,15 @@ has_either_block_of_two_consecutive_lines() {
 	if [ "$has_first_block" == "FOUND" ] || [ "$has_second_block" == "FOUND" ]; then
 		echo "FOUND"
 	else
-		echo "NOTFOUND"
+		if [ "$(file_contains_string "$first_line" "$REL_FILEPATH")" == "FOUND" ]; then
+			echo "ERROR"
+		else
+			echo "NOTFOUND"
+		fi
 	fi
 }
+
+
 
 # if first_line in file
 	# if second line in file

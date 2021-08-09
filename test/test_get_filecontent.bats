@@ -145,8 +145,19 @@ source src/ssh_tor.sh
 	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
 }
 
-@test "Check if no findable blocks returns notfound." {
+@test "Check if no findable blocks, while finding first line, returns error." {
 	first_line="first line"
+	second_line_option_I="third line"
+	second_line_option_II="fourth line"
+	REL_FILEPATH="test/samplefile_with_spaces.txt"
+	COMMAND_OUTPUT=$(has_either_block_of_two_consecutive_lines "$first_line"  "$second_line_option_I" "$second_line_option_II" "$REL_FILEPATH")
+	EXPECTED_OUTPUT="ERROR"
+	
+	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
+}
+
+@test "Check if no findable blocks, and line 1 not found returns notfound." {
+	first_line="non existant line"
 	second_line_option_I="third line"
 	second_line_option_II="fourth line"
 	REL_FILEPATH="test/samplefile_with_spaces.txt"
