@@ -121,3 +121,37 @@ source src/ssh_tor.sh
 		
 	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
 }
+
+
+@test "Check if first block of consecutive lines are found." {
+	first_line="second line"
+	second_line_option_I="second line"
+	second_line_option_II="third line"
+	REL_FILEPATH="test/samplefile_with_spaces.txt"
+	COMMAND_OUTPUT=$(has_either_block_of_two_consecutive_lines "$first_line"  "$second_line_option_I" "$second_line_option_II" "$REL_FILEPATH")
+	EXPECTED_OUTPUT="FOUND"
+	
+	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
+}
+
+@test "Check if second block of consecutive lines are found." {
+	first_line="first line"
+	second_line_option_I="third line"
+	second_line_option_II="second line"
+	REL_FILEPATH="test/samplefile_with_spaces.txt"
+	COMMAND_OUTPUT=$(has_either_block_of_two_consecutive_lines "$first_line"  "$second_line_option_I" "$second_line_option_II" "$REL_FILEPATH")
+	EXPECTED_OUTPUT="FOUND"
+	
+	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
+}
+
+@test "Check if no findable blocks returns notfound." {
+	first_line="first line"
+	second_line_option_I="third line"
+	second_line_option_II="fourth line"
+	REL_FILEPATH="test/samplefile_with_spaces.txt"
+	COMMAND_OUTPUT=$(has_either_block_of_two_consecutive_lines "$first_line"  "$second_line_option_I" "$second_line_option_II" "$REL_FILEPATH")
+	EXPECTED_OUTPUT="NOTFOUND"
+	
+	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
+}

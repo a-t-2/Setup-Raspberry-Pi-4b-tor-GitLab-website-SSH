@@ -58,37 +58,32 @@ read_three_args() {
 	echo "arg4=$arg4"
 }
 
+# actual usage:
+# 0. Check if the tor configuration file contains the directory used for ssh:
+#first_line="HiddenServiceDir $HIDDENSERVICEDIR_SSH$HIDDENSERVICENAME_SSH/"
+#second_line_option_I="HiddenServicePort 22"
+# Note option 2 is used.
+#second_line_option_II="HiddenServicePort 22 127.0.0.1:22"
+
 # Ensure the SSH service is contained in the tor configuration.
 has_two_consecutive_lines() {
 	first_line=$1
 	second_line=$2
-	REL_FILEPATH=$3
-	
-	# 0. Check if the tor configuration file contains the directory used for ssh:
-	#first_line="HiddenServiceDir $HIDDENSERVICEDIR_SSH$HIDDENSERVICENAME_SSH/"
-	
-	second_line_option_I="HiddenServicePort 22"
-	# Note option 2 is used.
-	second_line_option_II="HiddenServicePort 22 127.0.0.1:22"
-	
-	#REL_FILEPATH="test/samplefile_with_spaces.txt"
+	REL_FILEPATH=$3	
 
 	if [ "$(file_contains_string "$first_line" "$REL_FILEPATH")" == "FOUND" ]; then
 		if [ "$(file_contains_string "$second_line" "$REL_FILEPATH")" == "FOUND" ]; then
 			# get line_nr first_line
 			first_line_line_nr="$(get_line_nr "$first_line" "$REL_FILEPATH")"
-			#echo "$first_line_line_nr"
+			
 			# get next line number
 			next_line_number=$((first_line_line_nr + 1))
-			#echo "next_line_number=$next_line_number"
+			
 			# get next line
-			
 			next_line=$(get_line_by_nr "$next_line_number" "test/samplefile_with_spaces.txt")
-			#echo "next_line=$next_line"
 			
-			# verify next line equals second_line_option_I or second_line_option_II
+			# verify next line equals the second line
 			if [ "$next_line" == "$second_line" ]; then
-				# return true
 				echo "FOUND"
 			else
 				echo "NOTFOUND"
@@ -99,6 +94,23 @@ has_two_consecutive_lines() {
 	fi
 }
 
+has_either_block_of_two_consecutive_lines() {
+	first_line=$1
+	second_line_option_I=$2
+	second_line_option_II=$3
+	REL_FILEPATH=$4
+	
+	has_first_block=$(has_two_consecutive_lines "$first_line"  "$second_line_option_I" "$REL_FILEPATH")
+	#echo "has_first_block=$has_first_block"
+	
+	has_second_block=$(has_two_consecutive_lines "$first_line"  "$second_line_option_II" "$REL_FILEPATH")
+	#echo "has_second_block=$has_second_block"
+	if [ "$has_first_block" == "FOUND" ] || [ "$has_second_block" == "FOUND" ]; then
+		echo "FOUND"
+	else
+		echo "NOTFOUND"
+	fi
+}
 
 # if first_line in file
 	# if second line in file
