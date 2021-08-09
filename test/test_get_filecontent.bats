@@ -179,3 +179,54 @@ setup() {
 	
 	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
 }
+
+
+@test "Check if two lines are added if the block is not found." {
+	
+	# Verify the target file only contains thee lines before the test:
+	assert_equal "$(get_line_by_nr "1" "test/samplefile_with_spaces.txt")" "first line"
+	assert_equal "$(get_line_by_nr "2" "test/samplefile_with_spaces.txt")" "second line"
+	assert_equal "$(get_line_by_nr "3" "test/samplefile_with_spaces.txt")" "third line"
+	assert_equal "$(get_line_by_nr "4" "test/samplefile_with_spaces.txt")" ""
+	assert_equal "$(get_line_by_nr "5" "test/samplefile_with_spaces.txt")" ""
+	
+	first_line="non existant line"
+	second_line="fifth line"
+	REL_FILEPATH="test/samplefile_with_spaces.txt"
+	
+	# Run function that is being tested
+	stored=$(append_lines_if_not_found "$first_line"  "$second_line" "$REL_FILEPATH")
+	
+	# Check if the two lines are appended to file afterwards
+	assert_equal "$(get_line_by_nr "1" "test/samplefile_with_spaces.txt")" "first line"
+	assert_equal "$(get_line_by_nr "2" "test/samplefile_with_spaces.txt")" "second line"
+	assert_equal "$(get_line_by_nr "3" "test/samplefile_with_spaces.txt")" "third line"
+	assert_equal "$(get_line_by_nr "4" "test/samplefile_with_spaces.txt")" "non existant line"
+	assert_equal "$(get_line_by_nr "5" "test/samplefile_with_spaces.txt")" "fifth line"
+}
+
+@test "Check if two lines are not added if the block is found." {
+	
+	# Verify the target file only contains thee lines before the test:
+	assert_equal "$(get_line_by_nr "1" "test/static_file_with_spaces.txt")" "first line"
+	assert_equal "$(get_line_by_nr "2" "test/static_file_with_spaces.txt")" "second line"
+	assert_equal "$(get_line_by_nr "3" "test/static_file_with_spaces.txt")" "third line"
+	assert_equal "$(get_line_by_nr "4" "test/static_file_with_spaces.txt")" ""
+	assert_equal "$(get_line_by_nr "5" "test/static_file_with_spaces.txt")" ""
+	
+	first_line="second line"
+	second_line="third line"
+	REL_FILEPATH="test/static_file_with_spaces.txt"
+	
+	# Run function that is being tested
+	stored=$(append_lines_if_not_found "$first_line"  "$second_line" "$REL_FILEPATH")
+	
+	# Check if the two lines are appended to file afterwards
+	assert_equal "$(get_line_by_nr "1" "test/static_file_with_spaces.txt")" "first line"
+	assert_equal "$(get_line_by_nr "2" "test/static_file_with_spaces.txt")" "second line"
+	assert_equal "$(get_line_by_nr "3" "test/static_file_with_spaces.txt")" "third line"
+	assert_equal "$(get_line_by_nr "4" "test/static_file_with_spaces.txt")" ""
+	assert_equal "$(get_line_by_nr "5" "test/static_file_with_spaces.txt")" ""
+	
+	# TODO: include nr of lines in file check to verify no lines were appended.
+}

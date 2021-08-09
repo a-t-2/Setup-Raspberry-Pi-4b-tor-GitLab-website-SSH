@@ -89,6 +89,7 @@ has_two_consecutive_lines() {
 	fi
 }
 
+# TODO: remove
 has_either_block_of_two_consecutive_lines() {
 	first_line=$1
 	second_line_option_I=$2
@@ -116,32 +117,19 @@ has_either_block_of_two_consecutive_lines() {
 # 0. Check if the tor configuration file contains the directory used for ssh:
 #first_line="HiddenServiceDir $HIDDENSERVICEDIR_SSH$HIDDENSERVICENAME_SSH/"
 #second_line_option_I="HiddenServicePort 22"
-# Note option 2 is used.
 #second_line_option_II="HiddenServicePort 22 127.0.0.1:22"
-#append_lines_if_not_found() {
-#	if 
-#}
+# Note option 2 is used (in the old environment).
+#$(append_lines_if_not_found "$first_line" "$second_line_option_II" "$TOR_CONFIG_LOCATION")
 
-# if first_line in file
-	# if second line in file
-		# get line_nr first_line
-		# get next line
-		# verify next line equals second_line_option_I or second_line_option_II
-		# return true
-	# else:
-		# raise error
-	#fi
-# else:
-	# append first_line to file
-	# append second_line to file
-# fi
-
-#last_two_lines=$(sudo tail -n 2 /etc/tor/torrc)
-#second_last_line=$(echo $last_two_lines | sudo head -n 1)
-#last_line=$(sudo tail -n 1 /etc/tor/torrc)
-#if [ "$second_last_line" != "HiddenServiceDir /var/lib/tor/other_hidden_service/" ]; then
-#	if [ "$last_line" != "HiddenServicePort 22" ]; then
-#		echo 'HiddenServiceDir /var/lib/tor/other_hidden_service/' | sudo tee -a /etc/tor/torrc
-#		echo 'HiddenServicePort 22' | sudo tee -a /etc/tor/torrc
-#	fi
-#fi
+append_lines_if_not_found() {
+	first_line=$1
+	second_line=$2
+	REL_FILEPATH=$3
+	echo "REL_FILEPATH=$REL_FILEPATH"
+	has_block=$(has_two_consecutive_lines "$first_line"  "$second_line" "$REL_FILEPATH")
+	if  [ "$has_block" == "NOTFOUND" ]; then
+		#echo "$first_line" >> "$REL_FILEPATH"
+		echo "$first_line" | sudo tee -a "$REL_FILEPATH"
+		echo "$second_line" | sudo tee -a "$REL_FILEPATH"
+	fi
+}
