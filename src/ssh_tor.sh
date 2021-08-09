@@ -58,12 +58,7 @@ read_three_args() {
 	echo "arg4=$arg4"
 }
 
-# actual usage:
-# 0. Check if the tor configuration file contains the directory used for ssh:
-#first_line="HiddenServiceDir $HIDDENSERVICEDIR_SSH$HIDDENSERVICENAME_SSH/"
-#second_line_option_I="HiddenServicePort 22"
-# Note option 2 is used.
-#second_line_option_II="HiddenServicePort 22 127.0.0.1:22"
+
 
 # Ensure the SSH service is contained in the tor configuration.
 has_two_consecutive_lines() {
@@ -117,6 +112,15 @@ has_either_block_of_two_consecutive_lines() {
 }
 
 
+# actual usage:
+# 0. Check if the tor configuration file contains the directory used for ssh:
+#first_line="HiddenServiceDir $HIDDENSERVICEDIR_SSH$HIDDENSERVICENAME_SSH/"
+#second_line_option_I="HiddenServicePort 22"
+# Note option 2 is used.
+#second_line_option_II="HiddenServicePort 22 127.0.0.1:22"
+#append_lines_if_not_found() {
+#	if 
+#}
 
 # if first_line in file
 	# if second line in file

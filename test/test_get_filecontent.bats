@@ -4,6 +4,19 @@ load 'libs/bats-support/load'
 load 'libs/bats-assert/load'
 
 source src/ssh_tor.sh
+source test/helper.sh
+source test/hardcoded_testdata.txt
+
+# Method that executes all tested main code before running tests.
+setup() {
+	# print test filename to screen.
+	if [ "${BATS_TEST_NUMBER}" = 1 ];then
+		echo "# Testfile: $(basename ${BATS_TEST_FILENAME})-" >&3
+	fi
+	
+	ans=$(create_file_with_three_lines_with_spaces)
+	ans=$(create_file_with_three_lines_without_spaces)
+}
 
 @test "Checking if last three lines without spaces are returned." {
 	COMMAND_OUTPUT=$(get_last_n_lines_without_spaces "3" "test/samplefile_without_spaces.txt")
