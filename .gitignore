@@ -3,3 +3,6 @@
 
 # Tor
 *sudo_tor.out
+
+# Downloaded packages
+*.deb
