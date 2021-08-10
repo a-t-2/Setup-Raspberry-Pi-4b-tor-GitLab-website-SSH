@@ -53,3 +53,35 @@ install_package() {
 	install=$(sudo dpkg -i "$filename")
 	echo "install=$install"
 }
+
+# Register GitLab Runner
+register_gitlab_runner() {
+
+	# TODO: goto: http://127.0.0.1/admin/application_settings/ci_cd#js-ci-cd-settings
+	# TODO: disable "Enable shared runners for new projects"
+
+	# TODO: get token:
+	# http://127.0.0.1/admin/runners
+	# TODO: automatically pass the gitlab server address: 127.0.0.1 (or tor address or website)
+	# TODO: automatically get runner token from gitlab server
+	# TODO: automatically pass runner token to GitLab register
+	# TODO: automatically pass name of runner to GitLab Register
+	# TODO: automatically pass tags to runner.
+	# TODO: automatically add execution method, e.g. docker or shell (docker is more machine-agnostic)
+	# TODO: specify default Docker image (e.g. ruby:2.6)
+	registration=$(sudo gitlab-runner register)
+	#url=https://127.0.0.1
+	url="http://127.0.0.1"
+	# TODO: get token from file in gitignore
+	token=""
+	description=trucolrunner
+	taglist=notags
+	executor=docker
+	dockerimage="ruby:2.6"
+	registration=$(sudo gitlab-runner register --url $url --token $token --description $description --tag-list $taglist --executor $docker --docker-image $dockerimage)
+	# TODO: make command work
+	registration=$(sudo gitlab-runner register --url http://127.0.0.1 --token  --description trucolrunner --tag-list notags --executor docker --docker-image ruby:2.6)
+}
+
+# gitlab-runner install (just to besure)
+# sudo gitlab-runner start
