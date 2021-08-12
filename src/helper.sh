@@ -20,7 +20,7 @@ check_md5_sum() {
 	fi
 }
 
-get_expected_md5sum_for_architecture() {
+get_expected_md5sum_of_gitlab_runner_installer_for_architecture() {
 	arch=$1
 	if [ "$arch" == "amd64" ]; then
 		echo $x86_64_runner_checksum

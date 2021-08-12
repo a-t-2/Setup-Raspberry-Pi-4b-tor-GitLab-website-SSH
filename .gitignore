@@ -6,3 +6,6 @@
 
 # Downloaded packages
 *.deb
+
+# Runner
+src/gitlab_runner_token.txt

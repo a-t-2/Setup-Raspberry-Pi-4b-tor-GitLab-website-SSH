@@ -19,19 +19,23 @@ setup() {
 	#ans=$(create_file_with_three_lines_without_spaces)
 }
 
-@test "Checking get package." {
+
+#TODO: test if the install_gitlab_runner() { returns error if an unsupported architecture is included.
+
+	
+@test "Verifying the downloading of the GitLab Runner installer package." {
 	architecture=$(get_architecture)
 	COMMAND_OUTPUT=$(get_runner_package "$architecture")
 	EXPECTED_OUTPUT=""
 	
-	# TODO: check if file is curled
-	# TODO: add file to gitignore
-	# TODO:  checksum
 	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
 }
+# TODO: test if file is curled (exists)
+# TODO: test if the file is made runnable
+# TODO: test md5sum (is correct)
 
 
-@test "Checking installer." {
+@test "Checking if GitLab Runner installation was succesfull." {
 	architecture=$(get_architecture)
 	COMMAND_OUTPUT=$(install_package "$architecture")
 	EXPECTED_OUTPUT=""
@@ -55,17 +59,50 @@ setup() {
 	
 	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
 }
+# TODO: inspect several lines of the installation are found.
+# TODO: distinguish between output when the package is not, and is installed.
 
-@test "Checking get_checksum." {
-	md5sum=$(get_expected_md5sum_for_architecture "amd64")
-	EXPECTED_OUTPUT="31f2cb520079da881c02ce479c562ae9"
-		
-	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
-}
 
-@test "Checking check_md5_sum." {
-	md5sum=$(check_md5_sum "a4eabc0c3e65e7df3a3bb1ccc1adcd9f" "test/static_file_with_spaces.txt")
+@test "Check if GitLab Runner was succesfully registered with the GitLab server." {
+	md5sum=$(register_gitlab_runner)
 	EXPECTED_OUTPUT="EQUAL"
 		
 	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
 }
+# TODO: determine how one can verify whether the GitLab Runner is indeed verified at the GitLab server.
+
+
+@test "Verify a sudo user account is created for the GitLab Runner CI." {
+	md5sum=$(create_gitlab_ci_user)
+	EXPECTED_OUTPUT="EQUAL"
+		
+	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+}
+# TODO: determine how one can verify whether a sudo user account is created for the GitLab Runner CI
+
+
+@test "Verify the GitLab Runner CI service is installed correctly." {
+	md5sum=$(install_gitlab_runner_service)
+	EXPECTED_OUTPUT="EQUAL"
+		
+	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+}
+# TODO: determine how one can verify whether the GitLab Runner CI service is installed correctly.
+
+
+@test "The GitLab Runner CI service is started correctly." {
+	md5sum=$(start_gitlab_runner_service)
+	EXPECTED_OUTPUT="EQUAL"
+		
+	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+}
+# TODO: determine how one can verify whether the GitLab Runner CI service is started correctly.
+
+
+@test "The GitLab Runner CI service is running correctly." {
+	md5sum=$(run_gitlab_runner_service)
+	EXPECTED_OUTPUT="EQUAL"
+		
+	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+}
+# TODO: determine how one can verify whether the GitLab Runner CI service is running correctly.
