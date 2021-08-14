@@ -3,8 +3,8 @@
 load 'libs/bats-support/load'
 load 'libs/bats-assert/load'
 
-source src/install_gitlab_runner.sh
-source src/helper.sh
+source src/install_and_run_gitlab_runner.sh
+#source src/helper.sh
 source test/helper.sh
 source test/hardcoded_testdata.txt
 
@@ -90,7 +90,7 @@ setup() {
 # TODO: determine how one can verify whether the GitLab Runner CI service is installed correctly.
 
 
-@test "The GitLab Runner CI service is started correctly." {
+@test "Test if the GitLab Runner CI service is started correctly." {
 	md5sum=$(start_gitlab_runner_service)
 	EXPECTED_OUTPUT="EQUAL"
 		
@@ -99,10 +99,10 @@ setup() {
 # TODO: determine how one can verify whether the GitLab Runner CI service is started correctly.
 
 
-@test "The GitLab Runner CI service is running correctly." {
-	md5sum=$(run_gitlab_runner_service)
-	EXPECTED_OUTPUT="EQUAL"
+@test "Test if the GitLab Runner CI service is running correctly." {
+	run_service_output=$(run_gitlab_runner_service)
+	EXPECTED_OUTPUT="service is running"
 		
-	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+	assert_equal "$run_service_output" "$EXPECTED_OUTPUT"
 }
 # TODO: determine how one can verify whether the GitLab Runner CI service is running correctly.

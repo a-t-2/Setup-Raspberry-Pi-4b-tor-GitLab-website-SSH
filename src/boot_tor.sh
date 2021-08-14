@@ -15,6 +15,9 @@
 # @reboot bash /home/ubuntu/startup/torssh.sh >1 /dev/null 2> /home/ubuntu/startup/some_job.er
 
 
+source src/install_and_boot_gitlab_server.sh
+source src/install_and_boot_gitlab_runner.sh
+
 # TODO: verify the reboot script is executable, otherwise throw a warning
 
 # TODO: verify the tor script and sites have been deployed before proceeding, send message otherwise
@@ -32,6 +35,14 @@ connect_tor() {
 	echo $tor_connection
 }
 
+start_gitlab_server() {
+	$(install_and_run_gitlab_server)
+}
+
+start_gitlab_runner() {
+	$(install_and_run_gitlab_runner)
+}
+
 # Start infinite loop that keeps system connected to vpn
 while [ "false" == "false" ]
 do
@@ -40,7 +51,7 @@ do
 	echo "tor_status_outside=$tor_status_outside" >&2
 	sleep 1
 	
-	# Reconnect tor if the system is disconnected.
+	# Reconnect tor if the system is disconnected
 	if [[ "$tor_status_outside" != *"Congratulations"* ]]; then
 		echo "Is Disconnected"
 		# Kill all jobs
@@ -49,6 +60,8 @@ do
 		tor_connections=$(connect_tor)
 	elif [[ "$tor_status_outside" == *"Congratulations"* ]]; then
 		echo "Is connected"
+		
+		# Verify the correct amount of jobs are running
 		if [ `jobs|wc -l` == 2 ]
 			then
 			echo 'There are TWO jobs'
@@ -63,5 +76,9 @@ do
 			sleep 5 &
 			echo "started Job 2"
 		fi
+		
+		# Start gitlab service
+		#$(start_gitlab_service)
+		#$(start_gitlab_runner)
 	fi
 done

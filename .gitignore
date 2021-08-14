@@ -1,11 +1,14 @@
 .gitmodules
 /test/libs/*
 
-# Tor
-*sudo_tor.out
+# Don't sync logfiles
+*.out
 
 # Downloaded packages
 *.deb
 
 # Runner
 src/gitlab_runner_token.txt
+
+# Don't sync original source files
+src/originals/*

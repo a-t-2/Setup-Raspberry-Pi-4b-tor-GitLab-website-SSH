@@ -14,27 +14,22 @@ install_gitlab_runner() {
 	# its verified md5sum into hardcoded.txt (possibly adding an if statement 
 	# to get_architecture().)
 	
-	$(get_runner_package $arch)
-	$(install_package $arch)
-	$(register_gitlab_runner)
-	$(create_gitlab_ci_user)
-	$(install_gitlab_runner_service)
-	$(start_gitlab_runner_service)
-	$(run_gitlab_runner_service)
+	if [ $(gitlab_runner_is_running $arch) == "not_running" ]; then
+		$(get_runner_package $arch)
+		$(install_package $arch)
+		$(register_gitlab_runner)
+		$(create_gitlab_ci_user)
+		$(install_gitlab_runner_service)
+		$(start_gitlab_runner_service)
+		$(run_gitlab_runner_service)
+	fi
 }
 
-# Determine architecture.
-# Source: https://askubuntu.com/questions/189640/how-to-find-architecture-of-my-pc-and-ubuntu
-get_architecture() {
-	architecture=$(uname -m)
-	
-	# Parse architecture to what is available for GitLab Runner
-	# Source: https://stackoverflow.com/questions/65450286/how-to-install-gitlab-runner-to-centos-fedora
-	if [ "$architecture"=="x86_64" ]; then
-		architecture=amd64
-	fi
-	
-	echo $architecture
+
+gitlab_runner_is_running() {
+	# TODO: determine how to reliably determine if GitLabs server is running
+	arch=$1
+	echo "not_running"
 }
 
 
@@ -93,22 +88,21 @@ register_gitlab_runner() {
 
 	# Command to run runner in Docker (won't access the machine localhost this way/doesn't work).
 	#registration=$(sudo gitlab-runner register \
-	--non-interactive \
-	--url $url \
-	--description $description \
-	--registration-token $runner_token \
-	--executor docker \
-	--docker-image ruby:2.6)
+	#--non-interactive \
+	#--url $url \
+	#--description $description \
+	#--registration-token $runner_token \
+	#--executor docker \
+	#--docker-image ruby:2.6)
 	
 	# TODO: verify it works without clone-url
-	register=${sudo gitlab-runner register \
+	register=$(sudo gitlab-runner register \
 	--non-interactive \
 	--url http://localhost \
 	--description $description \
 	--registration-token $runner_token \
-	--executor shell)
+	--executor $executor)
 }
-
 
 # Create a GitLab CI user
 create_gitlab_ci_user() {
@@ -130,5 +124,9 @@ start_gitlab_runner_service() {
 
 # Run GitLab runner service
 run_gitlab_runner_service() {
-	sudo gitlab-runner run
+	#run_command=$(sudo gitlab-runner run &)
+	run_command=$(sudo gitlab-runner run --user=gitlab-runner &)
+	#run_command=$(nohup sudo gitlab-runner run > gitlab_runner_run.out &)
+	#run_command=$(nohup sudo gitlab-runner run --user=gitlab-runner &)
+	echo "service is running"
 }

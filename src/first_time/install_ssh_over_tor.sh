@@ -155,5 +155,3 @@ append_lines_if_not_found() {
 # TODO: verify tor is started
 # TODO: verify one can ssh into the server over tor
 # TODO: share ssh key
-
-
