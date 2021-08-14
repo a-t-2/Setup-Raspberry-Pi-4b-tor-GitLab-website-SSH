@@ -4,6 +4,7 @@
 # Source: https://docs.gitlab.com/runner/install/linux-manually.html
 
 source src/helper.sh
+source src/hardcoded_variables.txt
 source src/gitlab_runner_token.txt
 
 install_gitlab_runner() {
@@ -11,7 +12,7 @@ install_gitlab_runner() {
 	# TODO: verify if architecture is supported, raise error if not
 	# TODO: Mention that support for the architecture can be gained by
 	# downloading the right GitLab Runner installation package and adding
-	# its verified md5sum into hardcoded.txt (possibly adding an if statement 
+	# its verified md5sum into hardcoded_variables.txt (possibly adding an if statement 
 	# to get_architecture().)
 	
 	if [ $(gitlab_runner_is_running $arch) == "not_running" ]; then
@@ -25,6 +26,26 @@ install_gitlab_runner() {
 	fi
 }
 
+extract_runner_token_from_source() {
+	source_filepath="$LOG_LOCATION$RUNNER_SOURCE_FILENAME"
+	identification_str='<code id="registration_token">'
+	end_str="</code>"
+	
+	# Remove old log files if exist
+	if [ -f "$source_filepath" ] ; then
+	    rm "$source_filepath"
+	fi
+	
+	# download website
+	get_website=$(downoad_website_source "$GITLAB_SERVER" "$source_filepath")
+	
+	# Get line containing <code id="registration_token">
+	if [ "$(file_contains_string "$first_line" "$REL_FILEPATH")" == "FOUND" ]; then
+		line_nr=$(get_line_nr $identification_str $source_filepath)
+		line=$(get_line_by_nr $line_nr $source_filepath)
+		echo $line
+	fi
+}
 
 gitlab_runner_is_running() {
 	# TODO: determine how to reliably determine if GitLabs server is running

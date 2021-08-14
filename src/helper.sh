@@ -53,3 +53,54 @@ get_gitlab_package() {
 		echo "$gitlab_raspberry_package"
 	fi
 }
+
+downoad_website_source() {
+	site=$1
+	output_path=$2
+	
+	echo "site=$site"
+	echo "output_path=$output_path"
+	
+	#bash <(curl -s -N --header "PRIVATE-TOKEN: TOKEN" https://gitlab.com/PATH)
+	output=$(curl "$site" > "$output_path")
+	echo "output=$output"
+}
+
+
+get_last_n_lines_without_spaces() {
+	number=$1
+	REL_FILEPATH=$2
+	
+	# get last number lines of file
+	last_number_of_lines=$(sudo tail -n "$number" "$REL_FILEPATH")
+	
+	# Output true or false to pass the equality test result to parent function
+	echo $last_number_of_lines
+}
+
+# allows a string with spaces, hence allows a line
+file_contains_string() {
+	STRING=$1
+	REL_FILEPATH=$2
+	
+	if [[ ! -z $(grep "$STRING" "$REL_FILEPATH") ]]; then 
+		echo "FOUND"; 
+	else
+		echo "NOTFOUND";
+	fi
+}
+
+
+get_line_nr() {
+	STRING=$1
+	REL_FILEPATH=$2
+	line_nr=$(awk "/$STRING/{ print NR; exit }" $REL_FILEPATH)
+	echo $line_nr
+}
+
+get_line_by_nr() {
+	number=$1
+	REL_FILEPATH=$2
+	the_line=$(sed "${number}q;d" $REL_FILEPATH)
+	echo $the_line
+}

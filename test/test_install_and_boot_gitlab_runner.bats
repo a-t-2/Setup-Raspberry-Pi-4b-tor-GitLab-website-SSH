@@ -3,7 +3,7 @@
 load 'libs/bats-support/load'
 load 'libs/bats-assert/load'
 
-source src/install_and_run_gitlab_runner.sh
+source src/install_and_boot_gitlab_runner.sh
 #source src/helper.sh
 source test/helper.sh
 source test/hardcoded_testdata.txt
@@ -22,14 +22,22 @@ setup() {
 
 #TODO: test if the install_gitlab_runner() { returns error if an unsupported architecture is included.
 
-	
-@test "Verifying the downloading of the GitLab Runner installer package." {
-	architecture=$(get_architecture)
-	COMMAND_OUTPUT=$(get_runner_package "$architecture")
+
+@test "Test download website." {
+	COMMAND_OUTPUT=$(extract_runner_token_from_source)
 	EXPECTED_OUTPUT=""
 	
 	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
 }
+
+	
+#@test "Verifying the downloading of the GitLab Runner installer package." {
+#	architecture=$(get_architecture)
+#	COMMAND_OUTPUT=$(get_runner_package "$architecture")
+#	EXPECTED_OUTPUT=""
+#	
+#	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
+#}
 # TODO: test if file is curled (exists)
 # TODO: test if the file is made runnable
 # TODO: test md5sum (is correct)
@@ -99,10 +107,10 @@ setup() {
 # TODO: determine how one can verify whether the GitLab Runner CI service is started correctly.
 
 
-@test "Test if the GitLab Runner CI service is running correctly." {
-	run_service_output=$(run_gitlab_runner_service)
-	EXPECTED_OUTPUT="service is running"
-		
-	assert_equal "$run_service_output" "$EXPECTED_OUTPUT"
-}
+#@test "Test if the GitLab Runner CI service is running correctly." {
+#	run_service_output=$(run_gitlab_runner_service)
+#	EXPECTED_OUTPUT="service is running"
+#		
+#	assert_equal "$run_service_output" "$EXPECTED_OUTPUT"
+#}
 # TODO: determine how one can verify whether the GitLab Runner CI service is running correctly.

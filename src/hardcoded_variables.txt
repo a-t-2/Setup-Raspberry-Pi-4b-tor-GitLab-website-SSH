@@ -1,13 +1,15 @@
-LOG_LOCATION=src/logs/
+LOG_LOCATION='src/logs/'
 TOR_CONFIG_LOCATION=/etc/tor/torrc
 SSH_CONFIG_LOCATION=/etc/ssh/sshd_config
 HIDDENSERVICEDIR_SSH=/var/lib/tor/
 HIDDENSERVICENAME_SSH=other_hidden_service
 x86_64_runner_checksum=31f2cb520079da881c02ce479c562ae9
-gitlab_server="127.0.0.1"
+GITLAB_SERVER="127.0.0.1"
+GITLAB_SERVER_HTTP_URL="http://$GITLAB_SERVER"
 GITLAB_PORT_1="443:443"
 GITLAB_PORT_2="80:80"
 GITLAB_PORT_2="23:22"
 GITLAB_NAME="gitlab"
 GITLAB_DEFAULT_PACKAGE="gitlab/gitlab-ce:latest"
 GITLAB_RASPBERRY_PACKAGE="ulm0/gitlab"
+RUNNER_SOURCE_FILENAME="runner_website_source.txt"

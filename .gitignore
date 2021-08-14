@@ -12,3 +12,6 @@ src/gitlab_runner_token.txt
 
 # Don't sync original source files
 src/originals/*
+
+# logs
+src/logs/*

@@ -60,7 +60,6 @@ remove_gitlab_ci_user() {
 # Install GitLab runner service
 # TODO: specify which service
 uninstall_gitlab_runner_service() {
-	
 	sudo gitlab-runner uninstall
 }
 
@@ -76,8 +75,12 @@ stop_gitlab_runner_service() {
 # TODO: determine why there is no equivalent of stopping running the runner.
 run_gitlab_runner_service() {
 	#run_command=$(sudo gitlab-runner run &)
-	run_command=$(sudo gitlab-runner run --user=gitlab-runner &)
+	run_command=$(sudo gitlab-runner verify --delete)
 	#run_command=$(nohup sudo gitlab-runner run > gitlab_runner_run.out &)
 	#run_command=$(nohup sudo gitlab-runner run --user=gitlab-runner &)
 	echo "service is running"
 }
+
+# Troubleshooting: when runners are not removed:
+# Source: https://stackoverflow.com/questions/66616014/how-do-i-delete-unregister-a-gitlab-runner
+# Source: https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19828#note_54956232

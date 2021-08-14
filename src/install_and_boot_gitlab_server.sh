@@ -141,7 +141,7 @@ stop_nginx() {
 run_gitlab_docker() {
 	gitlab_package=$1
 	output=$(sudo docker run --detach \
-	  --hostname $gitlab_server \
+	  --hostname $GITLAB_SERVER \
 	  --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_2 \
 	  --name $GITLAB_NAME \
 	  --restart always \
@@ -151,7 +151,7 @@ run_gitlab_docker() {
 	  $gitlab_package)
 	  echo "$output"
 }
-  
+
 # TODO: 
 # go to:
 # localhost
