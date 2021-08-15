@@ -72,37 +72,42 @@ setup() {
 
 
 @test "Check if GitLab Runner was succesfully registered with the GitLab server." {
-	md5sum=$(register_gitlab_runner)
-	EXPECTED_OUTPUT="EQUAL"
+	actual_output=$(register_gitlab_runner)
+	EXPECTED_OUTPUT=""
 		
-	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+	assert_equal "$actual_output" "$EXPECTED_OUTPUT"
 }
 # TODO: determine how one can verify whether the GitLab Runner is indeed verified at the GitLab server.
 
 
 @test "Verify a sudo user account is created for the GitLab Runner CI." {
-	md5sum=$(create_gitlab_ci_user)
+	output=$(create_gitlab_ci_user)
 	EXPECTED_OUTPUT="EQUAL"
 		
-	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+	assert_equal "$output" "$EXPECTED_OUTPUT"
 }
+# TODO: First remove the user account that is used for this runner, then verify it is removed, then verify it is added
 # TODO: determine how one can verify whether a sudo user account is created for the GitLab Runner CI
 
 
 @test "Verify the GitLab Runner CI service is installed correctly." {
-	md5sum=$(install_gitlab_runner_service)
-	EXPECTED_OUTPUT="EQUAL"
-		
-	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+	# First uninstall the service:
+	uninstall_output=$(sudo gitlab-runner uninstall)
+	
+	# Then run the installation command that is being tested
+	output=$(install_gitlab_runner_service)
+	EXPECTED_OUTPUT=""
+
+	assert_equal "$output" "$EXPECTED_OUTPUT"
 }
 # TODO: determine how one can verify whether the GitLab Runner CI service is installed correctly.
 
 
 @test "Test if the GitLab Runner CI service is started correctly." {
-	md5sum=$(start_gitlab_runner_service)
-	EXPECTED_OUTPUT="EQUAL"
+	output=$(start_gitlab_runner_service)
+	EXPECTED_OUTPUT=""
 		
-	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
+	assert_equal "$output" "$EXPECTED_OUTPUT"
 }
 # TODO: determine how one can verify whether the GitLab Runner CI service is started correctly.
 

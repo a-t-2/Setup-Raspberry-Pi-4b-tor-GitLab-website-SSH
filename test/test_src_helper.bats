@@ -47,3 +47,29 @@ source test/hardcoded_testdata.txt
 		
 	assert_equal "$line" "$EXPECTED_OUTPUT"
 }
+
+
+@test "Checking docker_container_id." {
+	docker_container_id=$(get_docker_container_id_of_gitlab_server)
+	EXPECTED_OUTPUT="d5e4001b4d8f"
+	
+	# TODO: replace hardcoded container id with a `sudo docker ps -a` command
+	# that verifies the returned container_id is in the output of that command.
+	# (for the given gitlab package/architecture).
+		
+	assert_equal "$docker_container_id" "$EXPECTED_OUTPUT"
+}
+
+
+@test "Lines contain string." {
+	line1="first line"
+	line2="second line"
+	# TODO: concatenate lines into single string
+	
+	contained_substring="second"
+	
+	actual_result=$(lines_contain_string "$contained_substring" "\${line2}")
+	EXPECTED_OUTPUT="FOUND"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}

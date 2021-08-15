@@ -48,9 +48,9 @@ get_expected_md5sum_of_gitlab_runner_installer_for_architecture() {
 get_gitlab_package() {
 	architecture=$(dpkg --print-architecture)
 	if [ "$architecture" == "amd64" ]; then
-		echo "$gitlab_default_package"
+		echo "$GITLAB_DEFAULT_PACKAGE"
 	elif [ "$architecture" == "armhf" ]; then
-		echo "$gitlab_raspberry_package"
+		echo "$GITLAB_RASPBERRY_PACKAGE"
 	fi
 }
 
@@ -90,6 +90,18 @@ file_contains_string() {
 	fi
 }
 
+lines_contain_string() {
+	STRING=$1
+	lines=$2
+	
+	# TODO: change lines to be a filepath, and be a string/list of lines instead.
+	if [[ ! -z $(grep "$STRING" "$lines") ]]; then 
+		echo "FOUND"; 
+	else
+		echo "NOTFOUND";
+	fi
+}
+
 
 get_line_nr() {
 	eval STRING="$1"
@@ -118,4 +130,58 @@ get_first_line_containing_substring() {
 		# TODO: raise error
 		echo "ERROR"
 	fi
+}
+
+
+get_lhs_of_line_till_character() {
+	line=$1
+	character=$2
+	
+	# TODO: implement
+	lhs="gitlab/gitlab-ce"
+	lhs="gitlab-ce"
+	lhs="gitlab-ce:latest"
+	echo $lhs
+}
+
+get_rhs_of_line_till_character() {
+	line=$1
+	character=$2
+	
+	# TODO: implement
+	rhs="gitlab-ce:latest"
+	rhs="gitlab\/gitlab-ce:latest"
+	echo $rhs
+}
+
+get_docker_container_id_of_gitlab_server() {
+	
+	log_filepath=$LOG_LOCATION"docker_container.txt"
+	gitlab_package=$(get_gitlab_package)
+		
+	# TODO: select gitlab_package substring rhs up to / (the sed command does not handle this well)
+	# TODO: OR replace / with \/ (that works)
+	identification_str=$(get_rhs_of_line_till_character "$gitlab_package" "/")
+	echo "identification_str=$identification_str"
+	# write output to file
+	output=$(sudo docker ps -a > $log_filepath)
+	
+	# get line with "gitlab/gitlab-ce:latest" (package name depending on architecture).
+	line=$(get_first_line_containing_substring "$log_filepath" "\${identification_str}")
+	echo "line=$line"
+	
+	#get the container id from the first n characters of the line.
+	#container_id=$line[:12]
+	#container_id=$line{12}
+	
+	# TODO: select container_id substring up to character "space"
+	container_id=$(get_lhs_of_line_till_character "$line" " ")
+	#container_id=$line
+	
+	# delete the file as cleanup if it exist
+	if [ -f "$log_filepath" ] ; then
+	    rm "$log_filepath"
+	fi
+	
+	echo $container_id
 }
