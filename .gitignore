@@ -18,3 +18,7 @@ src/logs/*
 
 # creds
 src/creds.txt
+
+# get runner authentication token artifacts
+gitlab-cookies.txt
+gitlab-header.txt
