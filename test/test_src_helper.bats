@@ -37,3 +37,13 @@ source test/hardcoded_testdata.txt
 		assert_equal "The following file does not exist:" "$source_filepath"
 	fi 
 }
+
+
+@test "Checking get line containing substring." {
+	identification_str="second li"
+	#line=$(get_first_line_containing_substring "test/static_file_with_spaces.txt" "$identification_str")
+	line=$(get_first_line_containing_substring "test/static_file_with_spaces.txt" "\${identification_str}")
+	EXPECTED_OUTPUT="second line"
+		
+	assert_equal "$line" "$EXPECTED_OUTPUT"
+}

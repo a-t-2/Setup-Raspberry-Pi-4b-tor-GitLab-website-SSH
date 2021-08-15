@@ -39,12 +39,9 @@ extract_runner_token_from_source() {
 	# download website
 	get_website=$(downoad_website_source "$GITLAB_SERVER" "$source_filepath")
 	
-	# Get line containing <code id="registration_token">
-	if [ "$(file_contains_string "$first_line" "$REL_FILEPATH")" == "FOUND" ]; then
-		line_nr=$(get_line_nr $identification_str $source_filepath)
-		line=$(get_line_by_nr $line_nr $source_filepath)
-		echo $line
-	fi
+	# TODO: call function to get line
+	
+	# TODO: call function to get code
 }
 
 gitlab_runner_is_running() {

@@ -92,7 +92,7 @@ file_contains_string() {
 
 
 get_line_nr() {
-	STRING=$1
+	eval STRING="$1"
 	REL_FILEPATH=$2
 	line_nr=$(awk "/$STRING/{ print NR; exit }" $REL_FILEPATH)
 	echo $line_nr
@@ -103,4 +103,19 @@ get_line_by_nr() {
 	REL_FILEPATH=$2
 	the_line=$(sed "${number}q;d" $REL_FILEPATH)
 	echo $the_line
+}
+
+get_first_line_containing_substring() {
+	eval REL_FILEPATH="$1"	
+	eval identification_str="$2"
+	
+	# Get line containing <code id="registration_token">
+	if [ "$(file_contains_string "$identification_str_p1" "$REL_FILEPATH")" == "FOUND" ]; then
+		line_nr=$(get_line_nr "\${identification_str}" $REL_FILEPATH)
+		line=$(get_line_by_nr $line_nr $REL_FILEPATH)
+		echo "$line"
+	else
+		# TODO: raise error
+		echo "ERROR"
+	fi
 }
