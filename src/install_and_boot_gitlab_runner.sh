@@ -42,6 +42,9 @@ extract_runner_token_from_source() {
 	#https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12458
 	# https://stackoverflow.com/questions/31805041/how-to-access-gitlab-issues-using-curl
 	# https://gist.github.com/michaellihs/5ef5e8dbf48e63e2172a573f7b32c638
+	curl -vk --header "PRIVATE-TOKEN: MY.TOKEN.HERE" https://gitlab.SOMEWHERE.com/api/v3
+	curl -vk --header "PRIVATE-TOKEN: 9r6sPoAx3BFqZnxfexLS" http://127.0.0.1/admin/runners
+	curl -vk --header "PRIVATE-TOKEN: token-string-here123" http://127.0.0.1/admin/runners
 	
 	# TODO: call function to get line
 	
