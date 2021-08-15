@@ -15,3 +15,6 @@ src/originals/*
 
 # logs
 src/logs/*
+
+# creds
+src/creds.txt

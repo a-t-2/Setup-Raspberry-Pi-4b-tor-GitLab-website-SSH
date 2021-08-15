@@ -38,8 +38,13 @@ extract_runner_token_from_source() {
 	
 	# download website
 	get_website=$(downoad_website_source "$GITLAB_SERVER" "$source_filepath")
+	# Source: https://forum.gitlab.com/t/access-token-with-curl-is-redirecting-to-log-in-page-was-working-previously/21309
+	#https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12458
+	# https://stackoverflow.com/questions/31805041/how-to-access-gitlab-issues-using-curl
+	# https://gist.github.com/michaellihs/5ef5e8dbf48e63e2172a573f7b32c638
 	
 	# TODO: call function to get line
+	
 	
 	# TODO: call function to get code
 }
