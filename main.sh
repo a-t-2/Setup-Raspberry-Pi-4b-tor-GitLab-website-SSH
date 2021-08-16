@@ -20,7 +20,7 @@ source src/hardcoded_variables.txt
 
 # arguments:
 # TODO: check if the GitLab server is already running.
-$(install_and_run_gitlab_server)
+install_and_run_gitlab_server
 
 
 #source src/install_and_run_gitlab_runner.sh

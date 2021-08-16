@@ -27,7 +27,7 @@ install_and_run_gitlab_server() {
 		stop_apache_service
 		stop_nginx_service
 		stop_nginx
-		output=$(run_gitlab_docker)
+		run_gitlab_docker
 	fi
 }
 
@@ -145,8 +145,11 @@ stop_nginx() {
 # Run docker installation command of gitlab
 run_gitlab_docker() {
 	gitlab_package=$(get_gitlab_package)
+	read -p "Create command." >&2
 	command="sudo docker run --detach --hostname $GITLAB_SERVER --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_3 --name $GITLAB_NAME --restart always --volume $GITLAB_HOME/config:/etc/gitlab --volume $GITLAB_HOME/logs:/var/log/gitlab --volume $GITLAB_HOME/data:/var/opt/gitlab $gitlab_package"
+	read -p "Created command." >&2
 	echo "command=$command" > $LOG_LOCATION"run_gitlab.txt"
+	read -p "Exportedcommand." >&2
 	output=$(sudo docker run --detach \
 	  --hostname $GITLAB_SERVER \
 	  --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_3 \
@@ -156,6 +159,7 @@ run_gitlab_docker() {
 	  --volume $GITLAB_HOME/logs:/var/log/gitlab \
 	  --volume $GITLAB_HOME/data:/var/opt/gitlab \
 	  $gitlab_package)
+	  read -p "Ran command." >&2
 	  echo "$output"
 }
 
