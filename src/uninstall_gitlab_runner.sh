@@ -4,8 +4,7 @@
 # Source: https://docs.gitlab.com/runner/install/linux-manually.html
 
 source src/helper.sh
-source src/install_and_run_gitlab_runner.sh
-source src/gitlab_runner_token.txt
+source src/install_and_boot_gitlab_runner.sh
 
 uninstall_gitlab_runner() {
 	arch=$1
@@ -15,7 +14,7 @@ uninstall_gitlab_runner() {
 	# its verified md5sum into hardcoded.txt (possibly adding an if statement 
 	# to get_architecture().)
 	
-	get_runner_package $arch
+	#get_runner_package $arch
 	uninstall_package $arch
 	deregister_gitlab_runner
 	remove_gitlab_ci_user
@@ -30,10 +29,11 @@ uninstall_gitlab_runner() {
 # TODO: determine why the list of runners is not cleared/removed after uninstalling.
 uninstall_package() {
 	arch=$1
-	filename="gitlab-runner_"$arch".deb"
+	#filename="gitlab-runner_"$arch".deb"
+	filename="gitlab-runner_"$arch
 	echo "filename=$filename"
 	#install=$(sudo dpkg -i "$filename")
-	install=$(dpkg -i "$filename")
+	install=$(sudo dpkg -P "$filename")
 	echo "install=$install"
 }
 
@@ -53,7 +53,10 @@ deregister_gitlab_runner() {
 # Create a GitLab CI user
 # TODO: specify which user
 remove_gitlab_ci_user() {
-	sudo userdel --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+	#sudo userdel gitlab-runner
+	gitlab_username=gitlab-runner
+	output=$(sudo userdel -r -f "$gitlab_username")
+	#read -p "output=$output" >&2
 }
 
 

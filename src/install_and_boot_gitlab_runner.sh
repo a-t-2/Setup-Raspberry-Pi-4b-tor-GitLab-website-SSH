@@ -5,7 +5,7 @@
 
 source src/helper.sh
 source src/hardcoded_variables.txt
-source src/gitlab_runner_token.txt
+source src/get_gitlab_server_runner_token.sh
 
 install_gitlab_runner() {
 	arch=get_architecture
@@ -111,6 +111,7 @@ register_gitlab_runner() {
 	description=trucolrunner
 	executor=shell
 	dockerimage="ruby:2.6"
+	runner_token=$(get_gitlab_server_runner_token)
 
 	# Command to run runner in Docker (won't access the machine localhost this way/doesn't work).
 	#registration=$(sudo gitlab-runner register \
@@ -120,6 +121,8 @@ register_gitlab_runner() {
 	#--registration-token $runner_token \
 	#--executor docker \
 	#--docker-image ruby:2.6)
+	
+	read -p "runner_token=$runner_token" >&2
 	
 	# TODO: verify it works without clone-url
 	register=$(sudo gitlab-runner register \
@@ -139,6 +142,8 @@ create_gitlab_ci_user() {
 # Install GitLab runner service
 install_gitlab_runner_service() {
 	sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+	sudo usermod -a -G sudo gitlab-runner
+	sudo rm /home/gitlab-runner/.*
 }
 
 
@@ -151,8 +156,15 @@ start_gitlab_runner_service() {
 # Run GitLab runner service
 run_gitlab_runner_service() {
 	#run_command=$(sudo gitlab-runner run &)
-	run_command=$(sudo gitlab-runner run --user=gitlab-runner &)
+	#run_command=$(sudo gitlab-runner run --user=gitlab-runner &)
+	run_command=$(sudo gitlab-runner run --user=gitlab-runner)
 	#run_command=$(nohup sudo gitlab-runner run > gitlab_runner_run.out &)
 	#run_command=$(nohup sudo gitlab-runner run --user=gitlab-runner &)
 	echo "service is running"
 }
+
+#https://stackoverflow.com/questions/64257998/gitlab-ci-pipeline-fails-to-run
+# TODO: automate:
+#sudo visudo
+#gitlab-runner ALL=(ALL) NOPASSWD: ALL
+# TODO: share script that fixes it.

@@ -3,9 +3,7 @@
 source src/hardcoded_variables.txt
 source src/creds.txt
 
-
-
-get_gitlab_server_private_access_token() {
+get_gitlab_server_runner_token() {
 	GITURL=$GITLAB_SERVER_HTTP_URL
 	GITUSER=$gitlab_server_account
 	GITROOTPWD=$gitlab_server_password
