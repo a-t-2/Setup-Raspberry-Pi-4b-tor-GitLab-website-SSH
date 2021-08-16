@@ -136,45 +136,39 @@ get_lhs_of_line_till_character() {
 	character=$2
 	
 	# TODO: implement
-	lhs="gitlab/gitlab-ce"
-	lhs="gitlab-ce"
-	lhs="gitlab-ce:latest"
+	#lhs=${line%$character*}
+	lhs=$(cut -d "$character" -f1 <<< "$line")
 	echo $lhs
 }
 
 get_rhs_of_line_till_character() {
+	# TODO: include space right after character, e.g. return " with" instead of "width" on ": with".
 	line=$1
 	character=$2
 	
-	# TODO: implement
-	rhs="gitlab-ce:latest"
-	rhs="gitlab\/gitlab-ce:latest"
+	rhs=$(cut -d "$character" -f2- <<< "$line")
 	echo $rhs
 }
 
+
 get_docker_container_id_of_gitlab_server() {
-	
+	space=" "
 	log_filepath=$LOG_LOCATION"docker_container.txt"
 	gitlab_package=$(get_gitlab_package)
-		
+	
 	# TODO: select gitlab_package substring rhs up to / (the sed command does not handle this well)
 	# TODO: OR replace / with \/ (that works)
 	identification_str=$(get_rhs_of_line_till_character "$gitlab_package" "/")
-	echo "identification_str=$identification_str"
+	
 	# write output to file
 	output=$(sudo docker ps -a > $log_filepath)
 	
-	# get line with "gitlab/gitlab-ce:latest" (package name depending on architecture).
+	# Get line with "gitlab/gitlab-ce:latest" (package name depending on architecture).
 	line=$(get_first_line_containing_substring "$log_filepath" "\${identification_str}")
-	echo "line=$line"
+	#echo "line=$line"
 	
-	#get the container id from the first n characters of the line.
-	#container_id=$line[:12]
-	#container_id=$line{12}
-	
-	# TODO: select container_id substring up to character "space"
-	container_id=$(get_lhs_of_line_till_character "$line" " ")
-	#container_id=$line
+	# Get container id of the line containing the id.
+	container_id=$(get_lhs_of_line_till_character "$line" "$space")
 	
 	# delete the file as cleanup if it exist
 	if [ -f "$log_filepath" ] ; then
