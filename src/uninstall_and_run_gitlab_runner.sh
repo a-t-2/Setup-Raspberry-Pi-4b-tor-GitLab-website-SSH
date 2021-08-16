@@ -53,7 +53,7 @@ deregister_gitlab_runner() {
 # Create a GitLab CI user
 # TODO
 remove_gitlab_ci_user() {
-	sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+	sudo userdel --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
 }
 
 

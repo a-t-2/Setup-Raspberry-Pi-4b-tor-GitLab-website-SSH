@@ -14,8 +14,18 @@ echo "GitLab server root pwd: $gitlab_server_root_pwd";
 echo "Age: $age";
 echo "Full Name: $fullname";
 
-# arguments:
 
+source src/install_and_boot_gitlab_server.sh
+source src/hardcoded_variables.txt
+echo "GITLAB_SERVER=$GITLAB_SERVER" 
+echo "GITLAB_PORT_1=$GITLAB_PORT_1"
+echo "GITLAB_PORT_2=$GITLAB_PORT_2"
+echo "GITLAB_HOME=$GITLAB_HOME"
+
+
+# arguments:
+# TODO: check if the GitLab server is already running.
+$(install_and_run_gitlab_server)
 
 
 #source src/install_and_run_gitlab_runner.sh

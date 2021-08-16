@@ -14,11 +14,13 @@ source src/hardcoded_variables.txt
 
 install_and_run_gitlab_server() {
 	gitlab_package=$(get_gitlab_package)
-	if [ $(gitlab_server_is_running $gitlab_package) == "not_running" ]; then
-		$(install_docker)
-		$(install_docker_compose)
+		# TODO: only uninstall docker if an explicit argument for uninstallation is passed. 
+		# it is too likely that docker is also used for other software.
+		$(uninstall_docker)
+		$(uninstall_docker_compose)
+		
+		
 		$(stop_docker)
-		$(start_docker)
 		$(list_all_docker_containers)
 		$(stop_gitlab_package_docker $gitlab_package)
 		$(remove_gitlab_package_docker $gitlab_package)
@@ -27,7 +29,6 @@ install_and_run_gitlab_server() {
 		$(stop_nginx_service)
 		$(stop_nginx)
 		output=$(run_gitlab_docker $GITLAB_SERVER $GITLAB_PORT_1 $GITLAB_PORT_2 $GITLAB_HOME)
-	fi
 }
 
 
@@ -39,13 +40,13 @@ gitlab_server_is_running() {
 
 
 # Install docker:
-install_docker() {
-	output=$(yes | sudo apt install docker)
+uninstall_docker() {
+	output=$(yes | sudo apt remove docker)
 	echo "$output"
 }
 
-install_docker_compose() {
-	output=$(yes | sudo apt install docker-compose)
+uninstall_docker_compose() {
+	output=$(yes | sudo apt remove docker-compose)
 	echo "$output"
 }
 
@@ -68,42 +69,8 @@ list_all_docker_containers() {
 	output=$(sudo docker ps -a)
 	echo "$output"
 }
-#stop_gitlab_docker() {
-#	output=$(sudo docker stop gitlab)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#remove_gitlab_docker() {
-#	output=$(sudo docker rm gitlab)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#stop_gitlab_redis_docker() {
-#	output=$(sudo docker stop gitlab-redis)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#remove_gitlab_redis_docker() {
-#	output=$(sudo docker rm gitlab-redis)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#stop_gitlab_postgresql_docker() {
-#	output=$(sudo docker stop gitlab-postgresql)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#remove_gitlab_postgresql_docker() {
-#	output=$(sudo docker rm gitlab-postgresql)
-#	echo "$output"
-#}
 
-# TODO: make into variable based on architecture
+
 stop_gitlab_package_docker() {
 	gitlab_package=$1
 	output=$(sudo docker stop $gitlab_package)
