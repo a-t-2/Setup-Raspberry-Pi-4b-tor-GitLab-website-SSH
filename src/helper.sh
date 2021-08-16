@@ -92,10 +92,8 @@ file_contains_string() {
 
 lines_contain_string() {
 	STRING=$1
-	lines=$2
-	
-	# TODO: change lines to be a filepath, and be a string/list of lines instead.
-	if [[ ! -z $(grep "$STRING" "$lines") ]]; then 
+	eval lines=$2
+	if [[ $lines =~ "$STRING" ]]; then
 		echo "FOUND"; 
 	else
 		echo "NOTFOUND";

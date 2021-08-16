@@ -62,13 +62,12 @@ source test/hardcoded_testdata.txt
 
 
 @test "Lines contain string." {
-	line1="first line"
-	line2="second line"
+	line=$(printf 'First line\nsecond line \nthird line \n')
 	# TODO: concatenate lines into single string
 	
 	contained_substring="second"
 	
-	actual_result=$(lines_contain_string "$contained_substring" "\${line2}")
+	actual_result=$(lines_contain_string "$contained_substring" "\${line}")
 	EXPECTED_OUTPUT="FOUND"
 		
 	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
