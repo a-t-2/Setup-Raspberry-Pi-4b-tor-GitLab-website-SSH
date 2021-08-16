@@ -15,12 +15,12 @@ echo "Age: $age";
 echo "Full Name: $fullname";
 
 
-source src/install_and_boot_gitlab_server.sh
+source src/uninstall_and_boot_gitlab_server.sh
 source src/hardcoded_variables.txt
 
 # arguments:
 # TODO: check if the GitLab server is already running.
-$(install_and_run_gitlab_server)
+$(uninstall_and_run_gitlab_server)
 
 
 #source src/install_and_run_gitlab_runner.sh

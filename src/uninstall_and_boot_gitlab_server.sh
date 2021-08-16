@@ -12,23 +12,22 @@
 source src/helper.sh
 source src/hardcoded_variables.txt
 
-install_and_run_gitlab_server() {
+uninstall_and_run_gitlab_server() {
 	gitlab_package=$(get_gitlab_package)
 		# TODO: only uninstall docker if an explicit argument for uninstallation is passed. 
 		# it is too likely that docker is also used for other software.
-		$(uninstall_docker)
-		$(uninstall_docker_compose)
+		#$(uninstall_docker)
+		#$(uninstall_docker_compose)
 		
 		
 		$(stop_docker)
-		$(list_all_docker_containers)
 		$(stop_gitlab_package_docker $gitlab_package)
 		$(remove_gitlab_package_docker $gitlab_package)
 		$(remove_gitlab_docker_containers)
 		$(stop_apache_service)
 		$(stop_nginx_service)
 		$(stop_nginx)
-		output=$(run_gitlab_docker $GITLAB_SERVER $GITLAB_PORT_1 $GITLAB_PORT_2 $GITLAB_HOME)
+		#output=$(run_gitlab_docker $GITLAB_SERVER $GITLAB_PORT_1 $GITLAB_PORT_2 $GITLAB_HOME)
 }
 
 
@@ -55,21 +54,6 @@ stop_docker() {
 	output=$(sudo systemctl stop docker)
 	echo "$output"
 }
-
-# start docker
-start_docker() {
-	output=$(sudo systemctl start docker)
-	echo "$output"
-}
-
-
-# Delete all existing gitlab containers
-# 0. First clear all relevant containres using their NAMES:
-list_all_docker_containers() {
-	output=$(sudo docker ps -a)
-	echo "$output"
-}
-
 
 stop_gitlab_package_docker() {
 	gitlab_package=$1

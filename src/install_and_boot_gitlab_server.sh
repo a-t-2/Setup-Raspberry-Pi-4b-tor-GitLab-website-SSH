@@ -15,18 +15,19 @@ source src/hardcoded_variables.txt
 install_and_run_gitlab_server() {
 	gitlab_package=$(get_gitlab_package)
 	if [ $(gitlab_server_is_running $gitlab_package) == "not_running" ]; then
-		$(install_docker)
-		$(install_docker_compose)
-		$(stop_docker)
-		$(start_docker)
-		$(list_all_docker_containers)
-		$(stop_gitlab_package_docker $gitlab_package)
-		$(remove_gitlab_package_docker $gitlab_package)
-		$(remove_gitlab_docker_containers)
-		$(stop_apache_service)
-		$(stop_nginx_service)
-		$(stop_nginx)
-		output=$(run_gitlab_docker $GITLAB_SERVER $GITLAB_PORT_1 $GITLAB_PORT_2 $GITLAB_HOME)
+		#$(install_docker)
+		install_docker
+		install_docker_compose
+		stop_docker
+		start_docker
+		list_all_docker_containers
+		stop_gitlab_package_docker $gitlab_package
+		remove_gitlab_package_docker $gitlab_package
+		remove_gitlab_docker_containers
+		stop_apache_service
+		stop_nginx_service
+		stop_nginx
+		output=$(run_gitlab_docker)
 	fi
 }
 
@@ -144,11 +145,11 @@ stop_nginx() {
 # Run docker installation command of gitlab
 run_gitlab_docker() {
 	gitlab_package=$(get_gitlab_package)
-	command="sudo docker run --detach --hostname $GITLAB_SERVER --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_2 --name $GITLAB_NAME --restart always --volume $GITLAB_HOME/config:/etc/gitlab --volume $GITLAB_HOME/logs:/var/log/gitlab --volume $GITLAB_HOME/data:/var/opt/gitlab $gitlab_package"
+	command="sudo docker run --detach --hostname $GITLAB_SERVER --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_3 --name $GITLAB_NAME --restart always --volume $GITLAB_HOME/config:/etc/gitlab --volume $GITLAB_HOME/logs:/var/log/gitlab --volume $GITLAB_HOME/data:/var/opt/gitlab $gitlab_package"
 	echo "command=$command" > $LOG_LOCATION"run_gitlab.txt"
 	output=$(sudo docker run --detach \
 	  --hostname $GITLAB_SERVER \
-	  --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_2 \
+	  --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_3 \
 	  --name $GITLAB_NAME \
 	  --restart always \
 	  --volume $GITLAB_HOME/config:/etc/gitlab \
