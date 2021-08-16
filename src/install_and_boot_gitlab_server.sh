@@ -14,6 +14,12 @@ source src/hardcoded_variables.txt
 
 install_and_run_gitlab_server() {
 	gitlab_package=$(get_gitlab_package)
+	# TODO: verify if architecture is supported, raise error if not
+	# TODO: Mention that support for the architecture can be gained by
+	# downloading the right GitLab Runner installation package and adding
+	# its verified md5sum into hardcoded_variables.txt (possibly adding an if statement 
+	# to get_architecture().)
+	
 	if [ $(gitlab_server_is_running $gitlab_package) == "not_running" ]; then
 		#$(install_docker)
 		install_docker

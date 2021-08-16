@@ -8,7 +8,7 @@ source src/hardcoded_variables.txt
 source src/gitlab_runner_token.txt
 
 install_gitlab_runner() {
-	arch=$1
+	arch=get_architecture
 	# TODO: verify if architecture is supported, raise error if not
 	# TODO: Mention that support for the architecture can be gained by
 	# downloading the right GitLab Runner installation package and adding
@@ -16,13 +16,13 @@ install_gitlab_runner() {
 	# to get_architecture().)
 	
 	if [ $(gitlab_runner_is_running $arch) == "not_running" ]; then
-		$(get_runner_package $arch)
-		$(install_package $arch)
-		$(register_gitlab_runner)
-		$(create_gitlab_ci_user)
-		$(install_gitlab_runner_service)
-		$(start_gitlab_runner_service)
-		$(run_gitlab_runner_service)
+		get_runner_package $arch
+		install_package $arch
+		register_gitlab_runner
+		create_gitlab_ci_user
+		install_gitlab_runner_service
+		start_gitlab_runner_service
+		run_gitlab_runner_service
 	fi
 }
 

@@ -7,7 +7,7 @@ source src/helper.sh
 source src/install_and_run_gitlab_runner.sh
 source src/gitlab_runner_token.txt
 
-install_gitlab_runner() {
+uninstall_gitlab_runner() {
 	arch=$1
 	# TODO: verify if architecture is supported, raise error if not
 	# TODO: Mention that support for the architecture can be gained by
@@ -15,13 +15,13 @@ install_gitlab_runner() {
 	# its verified md5sum into hardcoded.txt (possibly adding an if statement 
 	# to get_architecture().)
 	
-	$(get_runner_package $arch)
-	$(uninstall_package $arch)
-	$(deregister_gitlab_runner)
-	$(remove_gitlab_ci_user)
-	$(uninstall_gitlab_runner_service)
-	$(stop_gitlab_runner_service)
-	$(stop_running_gitlab_runner_service)
+	get_runner_package $arch
+	uninstall_package $arch
+	deregister_gitlab_runner
+	remove_gitlab_ci_user
+	uninstall_gitlab_runner_service
+	stop_gitlab_runner_service
+	remove_gitlab_runner_services
 }
 
 
@@ -51,7 +51,7 @@ deregister_gitlab_runner() {
 }
 
 # Create a GitLab CI user
-# TODO
+# TODO: specify which user
 remove_gitlab_ci_user() {
 	sudo userdel --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
 }
@@ -73,12 +73,12 @@ stop_gitlab_runner_service() {
 
 # Run GitLab runner service
 # TODO: determine why there is no equivalent of stopping running the runner.
-run_gitlab_runner_service() {
+remove_gitlab_runner_services() {
 	#run_command=$(sudo gitlab-runner run &)
 	run_command=$(sudo gitlab-runner verify --delete)
 	#run_command=$(nohup sudo gitlab-runner run > gitlab_runner_run.out &)
 	#run_command=$(nohup sudo gitlab-runner run --user=gitlab-runner &)
-	echo "service is running"
+	echo "$run_command"
 }
 
 # Troubleshooting: when runners are not removed:

@@ -16,11 +16,13 @@ echo "Full Name: $fullname";
 
 
 source src/uninstall_and_boot_gitlab_server.sh
+source src/uninstall_and_run_gitlab_runner.sh
 source src/hardcoded_variables.txt
 
 # arguments:
 # TODO: check if the GitLab server is already running.
-$(uninstall_and_run_gitlab_server)
+#uninstall_gitlab_server
+uninstall_gitlab_runner
 
 
 #source src/install_and_run_gitlab_runner.sh

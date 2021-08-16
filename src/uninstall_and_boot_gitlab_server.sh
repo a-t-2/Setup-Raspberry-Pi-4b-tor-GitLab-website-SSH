@@ -12,7 +12,7 @@
 source src/helper.sh
 source src/hardcoded_variables.txt
 
-uninstall_and_run_gitlab_server() {
+uninstall_gitlab_server() {
 	gitlab_package=$(get_gitlab_package)
 		# TODO: only uninstall docker if an explicit argument for uninstallation is passed. 
 		# it is too likely that docker is also used for other software.
