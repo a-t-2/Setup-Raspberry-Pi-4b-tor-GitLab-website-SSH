@@ -141,9 +141,13 @@ create_gitlab_ci_user() {
 
 # Install GitLab runner service
 install_gitlab_runner_service() {
-	sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
-	sudo usermod -a -G sudo gitlab-runner
-	sudo rm /home/gitlab-runner/.*
+	gitlab_runner_username=gitlab-runner
+	$(sudo $gitlab_runner_username install --user=$gitlab_runner_username --working-directory=/home/$gitlab_runner_username)
+	$(sudo usermod -a -G sudo $gitlab_runner_username)
+	$(sudo rm /home/$gitlab_runner_username/.*)
+	read -p "Removed gitlab-runner dotfiles."
+	echo "$gitlab_runner_username ALL=(ALL) NOPASSWD: ALL" | sudo EDITOR='tee -a' visudo
+	read -p "Edited visudo."
 }
 
 
