@@ -20,13 +20,14 @@ uninstall_gitlab_server() {
 		#$(uninstall_docker_compose)
 		
 		
-		$(stop_docker)
-		$(stop_gitlab_package_docker $gitlab_package)
-		$(remove_gitlab_package_docker $gitlab_package)
-		$(remove_gitlab_docker_containers)
-		$(stop_apache_service)
-		$(stop_nginx_service)
-		$(stop_nginx)
+		stop_docker
+		stop_gitlab_package_docker $gitlab_package
+		remove_gitlab_package_docker $gitlab_package
+		remove_gitlab_docker_containers
+		stop_apache_service
+		stop_nginx_service
+		stop_nginx
+		delete_gitlab_folder
 		#output=$(run_gitlab_docker $GITLAB_SERVER $GITLAB_PORT_1 $GITLAB_PORT_2 $GITLAB_HOME)
 }
 
@@ -92,31 +93,9 @@ stop_nginx() {
 }
 
 
-# Run docker installation command of gitlab
-run_gitlab_docker() {
-	gitlab_package=$(get_gitlab_package)
-	command="sudo docker run --detach --hostname $GITLAB_SERVER --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_2 --name $GITLAB_NAME --restart always --volume $GITLAB_HOME/config:/etc/gitlab --volume $GITLAB_HOME/logs:/var/log/gitlab --volume $GITLAB_HOME/data:/var/opt/gitlab $gitlab_package"
-	echo "command=$command" > $LOG_LOCATION"run_gitlab.txt"
-	output=$(sudo docker run --detach \
-	  --hostname $GITLAB_SERVER \
-	  --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_2 \
-	  --name $GITLAB_NAME \
-	  --restart always \
-	  --volume $GITLAB_HOME/config:/etc/gitlab \
-	  --volume $GITLAB_HOME/logs:/var/log/gitlab \
-	  --volume $GITLAB_HOME/data:/var/opt/gitlab \
-	  $gitlab_package)
-	  echo "$output"
+delete_gitlab_folder() {
+	sudo rm -r $GITLAB_HOME
 }
-
-# TODO: 
-# go to:
-# localhost
-# set password
-# login with account name:
-#root
-# and the password you just set.
- 
 ## Trouble shooting
 # If it returns:
 #Error response from daemon: driver failed programming external connectivity on endpoint gitlab (<somelongcode>): Error starting userland proxy: listen tcp4 0.0.0.0:22: bind: address already in use.

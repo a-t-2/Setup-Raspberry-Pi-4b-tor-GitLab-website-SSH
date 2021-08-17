@@ -188,3 +188,10 @@ visudo_contains() {
 	actual_result=$(lines_contain_string "$line" "\${visudo_content}")
 	echo $actual_result
 }
+
+
+# gitlab runner status:
+#sudo gitlab-runner status
+
+# gitlab server status:
+#sudo docker exec -i 15c7d81d8a69 bash -c "gitlab-rails status"

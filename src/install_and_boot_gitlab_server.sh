@@ -11,6 +11,7 @@
 
 source src/helper.sh
 source src/hardcoded_variables.txt
+source src/creds.txt
 
 install_and_run_gitlab_server() {
 	gitlab_package=$(get_gitlab_package)
@@ -22,6 +23,7 @@ install_and_run_gitlab_server() {
 	
 	if [ $(gitlab_server_is_running $gitlab_package) == "not_running" ]; then
 		#$(install_docker)
+		create_gitlab_folder
 		install_docker
 		install_docker_compose
 		stop_docker
@@ -37,6 +39,10 @@ install_and_run_gitlab_server() {
 	fi
 }
 
+
+create_gitlab_folder() {
+	mkdir -p $GITLAB_HOME
+}
 
 gitlab_server_is_running() {
 	# TODO: determine how to reliably determine if GitLabs server is running
@@ -152,7 +158,7 @@ stop_nginx() {
 run_gitlab_docker() {
 	gitlab_package=$(get_gitlab_package)
 	read -p "Create command." >&2
-	command="sudo docker run --detach --hostname $GITLAB_SERVER --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_3 --name $GITLAB_NAME --restart always --volume $GITLAB_HOME/config:/etc/gitlab --volume $GITLAB_HOME/logs:/var/log/gitlab --volume $GITLAB_HOME/data:/var/opt/gitlab $gitlab_package"
+	command="sudo docker run --detach --hostname $GITLAB_SERVER --publish $GITLAB_PORT_1 --publish $GITLAB_PORT_2 --publish $GITLAB_PORT_3 --name $GITLAB_NAME --restart always --volume $GITLAB_HOME/config:/etc/gitlab --volume $GITLAB_HOME/logs:/var/log/gitlab --volume $GITLAB_HOME/data:/var/opt/gitlab -e GITLAB_ROOT_EMAIL=$GITLAB_ROOT_EMAIL -e GITLAB_ROOT_PASSWORD=$gitlab_server_password $gitlab_package"
 	read -p "Created command." >&2
 	echo "command=$command" > $LOG_LOCATION"run_gitlab.txt"
 	read -p "Exportedcommand." >&2
@@ -164,6 +170,7 @@ run_gitlab_docker() {
 	  --volume $GITLAB_HOME/config:/etc/gitlab \
 	  --volume $GITLAB_HOME/logs:/var/log/gitlab \
 	  --volume $GITLAB_HOME/data:/var/opt/gitlab \
+	  -e GITLAB_ROOT_EMAIL=$GITLAB_ROOT_EMAIL -e GITLAB_ROOT_PASSWORD=$gitlab_server_password \
 	  $gitlab_package)
 	  read -p "Ran command." >&2
 	  echo "$output"
