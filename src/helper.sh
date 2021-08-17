@@ -177,3 +177,14 @@ get_docker_container_id_of_gitlab_server() {
 	
 	echo $container_id
 }
+
+
+visudo_contains() {
+	line=$1
+	#echo "line=$line"
+	visudo_content=$(sudo cat /etc/sudoers)
+	#echo $visudo_content
+	
+	actual_result=$(lines_contain_string "$line" "\${visudo_content}")
+	echo $actual_result
+}

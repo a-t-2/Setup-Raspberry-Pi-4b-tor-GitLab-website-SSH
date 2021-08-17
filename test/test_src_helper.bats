@@ -119,3 +119,43 @@ source test/hardcoded_testdata.txt
 		
 	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
 }
+
+
+@test "Test file contains string." {
+	line="first line"
+	filepath="test/static_file_with_spaces.txt"
+	actual_result=$(file_contains_string "$line" "$filepath")
+	EXPECTED_OUTPUT="FOUND"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+
+@test "Test file contains string with variable username." {
+	line="first line"
+	filepath="test/static_file_with_spaces.txt"
+	actual_result=$(file_contains_string "$line" "$filepath")
+	EXPECTED_OUTPUT="FOUND"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+
+@test "Test file contains string with variable username that does exist." {
+	username=root
+	line="$username	ALL=(ALL:ALL) ALL"
+	actual_result=$(visudo_contains "$line" )
+	EXPECTED_OUTPUT="FOUND"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Test file contains string with variable username that does not exist." {
+	username=an-unused-username
+	line="$username	ALL=(ALL:ALL) ALL"
+	actual_result=$(visudo_contains "$line" )
+	EXPECTED_OUTPUT="NOTFOUND"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+

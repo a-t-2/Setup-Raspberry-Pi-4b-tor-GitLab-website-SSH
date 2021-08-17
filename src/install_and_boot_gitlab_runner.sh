@@ -122,7 +122,7 @@ register_gitlab_runner() {
 	#--executor docker \
 	#--docker-image ruby:2.6)
 	
-	read -p "runner_token=$runner_token" >&2
+	#read -p "runner_token=$runner_token" >&2
 	
 	# TODO: verify it works without clone-url
 	register=$(sudo gitlab-runner register \
@@ -145,9 +145,18 @@ install_gitlab_runner_service() {
 	$(sudo $gitlab_runner_username install --user=$gitlab_runner_username --working-directory=/home/$gitlab_runner_username)
 	$(sudo usermod -a -G sudo $gitlab_runner_username)
 	$(sudo rm /home/$gitlab_runner_username/.*)
-	read -p "Removed gitlab-runner dotfiles."
-	echo "$gitlab_runner_username ALL=(ALL) NOPASSWD: ALL" | sudo EDITOR='tee -a' visudo
-	read -p "Edited visudo."
+	
+	visudo_line="$gitlab_runner_username ALL=(ALL) NOPASSWD: ALL"
+	filepath="/etc/sudoers"
+	added_runner_to_visudo=$(visudo_contains "$visudo_line" "$filepath")
+	if [  "$added_runner_to_visudo" == "NOTFOUND" ]; then
+		echo "$gitlab_runner_username ALL=(ALL) NOPASSWD: ALL" | sudo EDITOR='tee -a' visudo
+		added_runner_to_visudo=$(visudo_contains "$visudo_line" "$filepath")
+		if [  "$added_runner_to_visudo" == "NOTFOUND" ]; then
+			# TODO: raise exception
+			echo "ERROR"
+		fi
+	fi
 }
 
 
