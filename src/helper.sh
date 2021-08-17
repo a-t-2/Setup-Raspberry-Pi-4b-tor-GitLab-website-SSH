@@ -195,3 +195,6 @@ visudo_contains() {
 
 # gitlab server status:
 #sudo docker exec -i 15c7d81d8a69 bash -c "gitlab-rails status"
+
+# reconfigure:
+#sudo docker exec -i 4544ce711468 bash -c "gitlab-ctl reconfigure"
