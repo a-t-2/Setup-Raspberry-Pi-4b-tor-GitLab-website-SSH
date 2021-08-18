@@ -20,9 +20,7 @@ source src/install_and_boot_gitlab_runner.sh
 
 # TODO: verify the reboot script is executable, otherwise throw a warning
 
-# TODO: verify the tor script and sites have been deployed before proceeding, send message otherwise
-echo "To get the onion domain to ssh into, run:"
-echo "sudo cat /var/lib/tor/other_hidden_service/hostname"
+
 
 get_tor_status() {
 	tor_status=$(curl --socks5 localhost:9050 --socks5-hostname localhost:9050 -s https://check.torproject.org/ | cat | grep -m 1 Congratulations | xargs)
@@ -36,11 +34,39 @@ connect_tor() {
 }
 
 start_gitlab_server() {
-	$(install_and_run_gitlab_server)
+	timestamp_filepath=$1
+	export_timestamp $timestamp_filepath
+	install_and_run_gitlab_server
 }
 
 start_gitlab_runner() {
-	$(install_and_run_gitlab_runner)
+	timestamp_filepath=$1
+	export_timestamp $timestamp_filepath
+	install_and_run_gitlab_runner
+}
+
+export_timestamp() {
+	filepath=$1
+	int_time_in_second=$[$(date +%s)]
+	echo "$int_time_in_second" > "$filepath"
+}
+
+started_less_than_n_seconds_ago() {
+	timestamp_filepath=$1
+	n_seconds=$2
+	
+	# get results and specify expected result.
+	timestamp_time=$(cat "$timestamp_filepath")
+	current_time=$[$(date +%s)]
+
+	timestamp_age="$(echo $current_time $timestamp_time-p | dc)"
+	
+	# Was the timestamp created less than n_seconds ago?
+	if [ "$timestamp_age" -lt $n_seconds ]; then
+		echo "YES"
+	else
+		echo "NO"
+	fi
 }
 
 deploy_gitlab() {
@@ -59,47 +85,54 @@ deploy_gitlab() {
 				# wait
 			# Check if GitLab server has been started in the last 5 minutes, if no:
 				# start GitLab runner
+	echo "hello world"
 }
 
-# Start infinite loop that keeps system connected to vpn
-while [ "false" == "false" ]
-do
-	# Get tor connection status
-	tor_status_outside=$(get_tor_status)
-	echo "tor_status_outside=$tor_status_outside" >&2
-	sleep 1
-	
-	# Reconnect tor if the system is disconnected
-	if [[ "$tor_status_outside" != *"Congratulations"* ]]; then
-		echo "Is Disconnected"
-		# Kill all jobs
-		jobs -p | xargs -I{} kill -- -{}
-		sudo killall tor
-		tor_connections=$(connect_tor)
+start_and_monitor_tor_connection(){
+	# TODO: verify the tor script and sites have been deployed before proceeding, send message otherwise
+	echo "To get the onion domain to ssh into, run:"
+	echo "sudo cat /var/lib/tor/other_hidden_service/hostname"
+
+	# Start infinite loop that keeps system connected to vpn
+	while [ "false" == "false" ]
+	do
+		# Get tor connection status
+		tor_status_outside=$(get_tor_status)
+		echo "tor_status_outside=$tor_status_outside" >&2
+		sleep 1
 		
-		deploy_gitlab
-		
-	elif [[ "$tor_status_outside" == *"Congratulations"* ]]; then
-		echo "Is connected"
-		
-		# Verify the correct amount of jobs are running
-		if [ `jobs|wc -l` == 2 ]
-			then
-			echo 'There are TWO jobs'
-		else
-			echo 'There are NOT CORRECT AMOUNT OF jobs'
+		# Reconnect tor if the system is disconnected
+		if [[ "$tor_status_outside" != *"Congratulations"* ]]; then
+			echo "Is Disconnected"
 			# Kill all jobs
 			jobs -p | xargs -I{} kill -- -{}
-			# restart jobs
-			echo "Killed all jobs"
-			sleep 6 &
-			echo "\n\n\n Job 1"
-			sleep 5 &
-			echo "started Job 2"
+			sudo killall tor
+			tor_connections=$(connect_tor)
+			
+			deploy_gitlab
+			
+		elif [[ "$tor_status_outside" == *"Congratulations"* ]]; then
+			echo "Is connected"
+			
+			# Verify the correct amount of jobs are running
+			if [ `jobs|wc -l` == 2 ]
+				then
+				echo 'There are TWO jobs'
+			else
+				echo 'There are NOT CORRECT AMOUNT OF jobs'
+				# Kill all jobs
+				jobs -p | xargs -I{} kill -- -{}
+				# restart jobs
+				echo "Killed all jobs"
+				sleep 6 &
+				echo "\n\n\n Job 1"
+				sleep 5 &
+				echo "started Job 2"
+			fi
+			
+			# Start GitLab service
+			#$(start_gitlab_service)
+			#$(start_gitlab_runner)
 		fi
-		
-		# Start GitLab service
-		#$(start_gitlab_service)
-		#$(start_gitlab_runner)
-	fi
-done
+	done
+}

@@ -22,3 +22,6 @@ src/creds.txt
 # get runner authentication token artifacts
 gitlab-cookies.txt
 gitlab-header.txt
+
+# test_artifacts
+test/timestamp.txt

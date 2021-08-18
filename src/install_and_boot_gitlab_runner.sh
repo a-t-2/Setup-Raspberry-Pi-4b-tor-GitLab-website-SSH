@@ -7,7 +7,7 @@ source src/helper.sh
 source src/hardcoded_variables.txt
 source src/get_gitlab_server_runner_token.sh
 
-install_gitlab_runner() {
+install_and_run_gitlab_runner() {
 	arch=get_architecture
 	# TODO: verify if architecture is supported, raise error if not
 	# TODO: Mention that support for the architecture can be gained by
