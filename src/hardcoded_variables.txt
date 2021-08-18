@@ -14,3 +14,5 @@ GITLAB_HOME=~/gitlab
 GITLAB_DEFAULT_PACKAGE="gitlab/gitlab-ce:latest"
 GITLAB_RASPBERRY_PACKAGE="ulm0/gitlab"
 RUNNER_SOURCE_FILENAME="runner_website_source.txt"
+SERVER_TIMESTAMP_FILEPATH=src/logs/time_gitlab_server_started.txt
+RUNNER_TIMESTAMP_FILEPATH=src/logs/time_gitlab_runner_started.txt

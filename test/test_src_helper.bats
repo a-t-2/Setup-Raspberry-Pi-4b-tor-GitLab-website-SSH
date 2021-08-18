@@ -186,3 +186,26 @@ source test/hardcoded_testdata.txt
     assert_equal "$(lines_contain_string 'run: sidekiq: (pid ' "\${actual_result}")" "FOUND"
     assert_equal "$(lines_contain_string 'run: sshd: (pid ' "\${actual_result}")" "FOUND"
 }
+
+
+@test "Test check if gitlab runner is running function returns correct output for running runner." {
+	# TODO: uninstall gitlab server
+	# TODO: uninstall gitlab runner
+	# TODO: install gitlab server
+	# TODO: wait untill gitlab server is installed and running correctly/responsively
+	# TODO: start gitlab runner
+	
+	# ATTENTION: This test only works if you (manually) started a gitlab runner)
+	
+	# Check if runner is running
+	actual_result=$(check_gitlab_runner_status)
+	EXPECTED_OUTPUT="gitlab-runner: Service is running"
+	
+	if [ "$actual_result" == "$EXPECTED_OUTPUT" ]; then
+		actual_result=$(gitlab_runner_is_running | tail -1)
+		EXPECTED_OUTPUT="RUNNING"
+		assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+	else
+		assert_equal "The gitlab runner is not running." "To use this test, you should ensure the runner is running."
+	fi
+}
