@@ -159,3 +159,30 @@ source test/hardcoded_testdata.txt
 	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
 }
 
+
+@test "Test check if gitlab runner status is identified correctly." {
+	actual_result=$(check_gitlab_runner_status)
+	EXPECTED_OUTPUT="gitlab-runner: Service is running"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Test check if gitlab server status is identified correctly." {
+	actual_result=$(check_gitlab_server_status)
+	EXPECTED_OUTPUT="gitlab-runner: Service is running"
+	assert_equal "$(lines_contain_string 'run: alertmanager: (pid ' "\${actual_result}")" "FOUND"
+	assert_equal "$(lines_contain_string 'run: gitaly: (pid ' "\${actual_result}")" "FOUND"
+	assert_equal "$(lines_contain_string 'run: gitlab-exporter: (pid ' "\${actual_result}")" "FOUND"
+	assert_equal "$(lines_contain_string 'run: gitlab-workhorse: (pid ' "\${actual_result}")" "FOUND"
+	assert_equal "$(lines_contain_string 'run: grafana: (pid ' "\${actual_result}")" "FOUND"
+	assert_equal "$(lines_contain_string 'run: logrotate: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: nginx: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: postgres-exporter: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: postgresql: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: prometheus: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: puma: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: redis: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: redis-exporter: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: sidekiq: (pid ' "\${actual_result}")" "FOUND"
+    assert_equal "$(lines_contain_string 'run: sshd: (pid ' "\${actual_result}")" "FOUND"
+}

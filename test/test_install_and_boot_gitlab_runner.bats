@@ -112,10 +112,18 @@ setup() {
 # TODO: determine how one can verify whether the GitLab Runner CI service is started correctly.
 
 
-#@test "Test if the GitLab Runner CI service is running correctly." {
-#	run_service_output=$(run_gitlab_runner_service)
-#	EXPECTED_OUTPUT="service is running"
-#		
-#	assert_equal "$run_service_output" "$EXPECTED_OUTPUT"
-#}
+@test "Test if the GitLab Runner CI service is running correctly." {
+	#run_service_output=$(run_gitlab_runner_service)
+	#run_service_output=run_gitlab_runner_service
+	run_gitlab_runner_service
+	EXPECTED_OUTPUT="service is running"
+		
+	assert_equal "$run_service_output" "$EXPECTED_OUTPUT"
+}
 # TODO: determine how one can verify whether the GitLab Runner CI service is running correctly.
+
+
+
+@test "Trivial test." {
+	assert_equal "True" "True"
+}

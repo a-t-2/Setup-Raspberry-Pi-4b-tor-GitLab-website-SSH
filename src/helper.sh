@@ -191,10 +191,55 @@ visudo_contains() {
 
 
 # gitlab runner status:
-#sudo gitlab-runner status
+check_gitlab_runner_status() {
+	status=$(sudo gitlab-runner status)
+	echo "$status"
+}
 
 # gitlab server status:
-#sudo docker exec -i 15c7d81d8a69 bash -c "gitlab-rails status"
+#sudo docker exec -i 79751949c099 bash -c "gitlab-rails status"
+#sudo docker exec -i 79751949c099 bash -c "gitlab-ctl status"
+check_gitlab_server_status() {
+	container_id=$(get_docker_container_id_of_gitlab_server)
+	#echo "container_id=$container_id"
+	status=$(sudo docker exec -i "$container_id" bash -c "gitlab-ctl status")
+	echo "$status"
+}
+
+gitlab_server_is_running() {
+	actual_result=$(check_gitlab_server_status)
+	if
+	[  "$(lines_contain_string 'run: alertmanager: (pid ' "\${actual_result}")" == "FOUND" ] &&
+	[  "$(lines_contain_string 'run: gitaly: (pid ' "\${actual_result}")" == "FOUND" ] &&
+	[  "$(lines_contain_string 'run: gitlab-exporter: (pid ' "\${actual_result}")" == "FOUND" ] &&
+	[  "$(lines_contain_string 'run: gitlab-workhorse: (pid ' "\${actual_result}")" == "FOUND" ] &&
+	[  "$(lines_contain_string 'run: grafana: (pid ' "\${actual_result}")" == "FOUND" ] &&
+	[  "$(lines_contain_string 'run: logrotate: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: nginx: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: postgres-exporter: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: postgresql: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: prometheus: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: puma: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: redis: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: redis-exporter: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: sidekiq: (pid ' "\${actual_result}")" == "FOUND" ] &&
+    [  "$(lines_contain_string 'run: sshd: (pid ' "\${actual_result}")" == "FOUND" ]
+	then
+		echo "RUNNING"
+	else
+		echo "NOTRUNNING"
+	fi
+}
+
+gitlab_runner_is_running() {
+	actual_result=$(check_gitlab_runner_status)
+	EXPECTED_OUTPUT="gitlab-runner: Service is running"
+	if [ "$actual_result" == "$EXPECTED_OUTPUT" ]; then
+		echo "RUNNING"
+	else
+		echo "NOTRUNNING"
+	fi
+}
 
 # reconfigure:
 #sudo docker exec -i 4544ce711468 bash -c "gitlab-ctl reconfigure"
