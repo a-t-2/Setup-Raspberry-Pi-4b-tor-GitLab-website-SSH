@@ -43,6 +43,24 @@ start_gitlab_runner() {
 	$(install_and_run_gitlab_runner)
 }
 
+deploy_gitlab() {
+	# assume this function is called every minute or so
+	# Check if GitLab server is running, if no: 
+		# Check if GitLab server has been started in the last 15 minutes, if yes:
+			# wait
+		# Check if GitLab server has been started in the last 15 minutes, if no:
+			# start GitLab server
+			
+	# Check if GitLab server is running, if yes: 
+		# Check if GitLab runner is running, if yes:
+			# pass
+		# Check if GitLab runner is running, if no:
+			# Check if GitLab server has been started in the last 5 minutes, if yes:
+				# wait
+			# Check if GitLab server has been started in the last 5 minutes, if no:
+				# start GitLab runner
+}
+
 # Start infinite loop that keeps system connected to vpn
 while [ "false" == "false" ]
 do
@@ -58,6 +76,9 @@ do
 		jobs -p | xargs -I{} kill -- -{}
 		sudo killall tor
 		tor_connections=$(connect_tor)
+		
+		deploy_gitlab
+		
 	elif [[ "$tor_status_outside" == *"Congratulations"* ]]; then
 		echo "Is connected"
 		
@@ -77,7 +98,7 @@ do
 			echo "started Job 2"
 		fi
 		
-		# Start gitlab service
+		# Start GitLab service
 		#$(start_gitlab_service)
 		#$(start_gitlab_runner)
 	fi
