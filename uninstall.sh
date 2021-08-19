@@ -53,7 +53,7 @@ fi
 if [ "$server_hard_flag" == "true" ] && [ "$server_hard_yes_flag" == "false" ]; then
 	read -p "Do you wish to uninstall GitLab and remove all its repositories, issues, users and server settings?" yn
 	case $yn in
-		[Yy]* ) uninstall_gitlab_runner "true";;
+		[Yy]* ) uninstall_gitlab_server "true";;
 		[Nn]* ) echo "The GitLab server was NOT uninstalled"; exit 0;;
 		* ) echo "Please answer yes or no."
 		exit 1;;
@@ -61,7 +61,7 @@ if [ "$server_hard_flag" == "true" ] && [ "$server_hard_yes_flag" == "false" ]; 
 fi
 
 if [ "$server_hard_flag" == "true" ] && [ "$server_hard_yes_flag" == "true" ]; then
-	uninstall_gitlab_runner "true"
+	uninstall_gitlab_server "true"
 	echo "Performed hard uninstallation of GitLab server and all its repositories, settings etc."
 fi
 

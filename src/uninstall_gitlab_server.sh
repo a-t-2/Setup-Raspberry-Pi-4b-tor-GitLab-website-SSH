@@ -16,18 +16,20 @@ uninstall_gitlab_server() {
 	is_hard_uninstall=$1
 	is_docker_uninstall=$2
 	
+	# Get which GitLab package is used based on the machine architecture
 	gitlab_package=$(get_gitlab_package)
 	
-	# TODO: only uninstall docker if an explicit argument for uninstallation is passed. 
-	# it is too likely that docker is also used for other software.
-	#$(uninstall_docker)
-	#$(uninstall_docker_compose)
-	
-	
+	# Start stopping, removing and uninstalling GitLab server.
 	stop_docker
 	stop_gitlab_package_docker $gitlab_package
 	remove_gitlab_package_docker $gitlab_package
 	remove_gitlab_docker_containers
+	
+	# Uninstall docker if an explicit argument for uninstallation is passed. 
+	if [ "$is_docker_uninstall" == true ]; then
+		$(uninstall_docker)
+		$(uninstall_docker_compose)
+	fi
 	stop_apache_service
 	stop_nginx_service
 	stop_nginx

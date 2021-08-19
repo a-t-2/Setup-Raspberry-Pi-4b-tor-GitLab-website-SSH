@@ -251,8 +251,8 @@ check_for_n_seconds_if_gitlab_server_is_running() {
 	end=$(("$SECONDS" + "$duration"))
 	while [ $SECONDS -lt $end ]; do
 		if [ $(gitlab_server_is_running | tail -1) == "RUNNING" ]; then
-			#echo "RUNNING"; break;
-			echo "RUNNING"
+			echo "RUNNING"; break;
+			#echo "RUNNING"
 			running="true"
 		fi
 	done

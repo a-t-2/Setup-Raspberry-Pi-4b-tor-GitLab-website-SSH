@@ -6,7 +6,6 @@ load 'libs/bats-file/load'
 
 source src/helper.sh
 
-
 @test "If error is thrown if the GitLab server is not running within 5 seconds after uninstallation." {
 	# uninstall the GitLab server and runners.
 	run bash -c "./uninstall.sh -h -r -y"
