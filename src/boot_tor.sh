@@ -17,7 +17,7 @@
 
 source src/install_and_boot_gitlab_server.sh
 source src/install_and_boot_gitlab_runner.sh
-
+source src/helper.sh
 # TODO: verify the reboot script is executable, otherwise throw a warning
 
 
@@ -55,15 +55,19 @@ started_less_than_n_seconds_ago() {
 	timestamp_filepath=$1
 	n_seconds=$2
 	
-	# get results and specify expected result.
-	timestamp_time=$(cat "$timestamp_filepath")
-	current_time=$[$(date +%s)]
+	if [ -f "$timestamp_filepath" ] ; then
+		# get results and specify expected result.
+		timestamp_time=$(cat "$timestamp_filepath")
+		current_time=$[$(date +%s)]
 
-	timestamp_age="$(echo $current_time $timestamp_time-p | dc)"
-	
-	# Was the timestamp created less than n_seconds ago?
-	if [ "$timestamp_age" -lt $n_seconds ]; then
-		echo "YES"
+		timestamp_age="$(echo $current_time $timestamp_time-p | dc)"
+		
+		# Was the timestamp created less than n_seconds ago?
+		if [ "$timestamp_age" -lt $n_seconds ]; then
+			echo "YES"
+		else
+			echo "NO"
+		fi
 	else
 		echo "NO"
 	fi
@@ -71,23 +75,28 @@ started_less_than_n_seconds_ago() {
 
 deploy_gitlab() {
 	# assume this function is called every minute or so
+	
 	# Check if GitLab server is running, if no: 
-	if [ gitlab_server_is_running == "NOTRUNNING" ]; then
-		
+	if [ $(gitlab_server_is_running | tail -1) == "NOTRUNNING" ]; then
+		started_server_n_sec_ago=$(started_less_than_n_seconds_ago $SERVER_TIMESTAMP_FILEPATH 600)
+		echo "The gitlab server is not running. started_server_n_sec_ago=$started_server_n_sec_ago"
 		
 		# Check if GitLab server has been started in the last 10 minutes, if yes:
-		if [ $(started_less_than_n_seconds_ago $SERVER_TIMESTAMP_FILEPATH 600) == "YES" ]; then
+		if [ "$started_server_n_sec_ago" == "YES" ]; then
 			# wait
 			sleep 0
 		# Check if GitLab server has been started in the last 10 minutes, if no:
-		elif [ $(started_less_than_n_seconds_ago $SERVER_TIMESTAMP_FILEPATH 600) == "NO" ]; then
+		elif [ "$started_server_n_sec_ago" == "NO" ]; then
 			# TODO: check when the last start of the server was initiated, whether the device has been live since, and raise error if server is still not running by now.
+			echo "Starting gitlab server"
 			# start GitLab server
-			start_gitlab_server $SERVER_TIMESTAMP_FILEPATH
+			output=$(start_gitlab_server "$SERVER_TIMESTAMP_FILEPATH")
+			echo "server start output=$output"
 		fi
 	# Check if GitLab server is running, if yes: 
-	elif [ gitlab_server_is_running == "RUNNING" ]; then
+	elif [ $(gitlab_server_is_running | tail -1) == "RUNNING" ]; then
 		# TODO: wait untill gitlab server is installed and running correctly/responsively
+		echo "The gitlab server is running."
 		
 		# Check if GitLab runner is running, if yes:
 		if [ $(gitlab_runner_is_running | tail -1) == "RUNNING" ]; then
@@ -108,7 +117,6 @@ deploy_gitlab() {
 		fi	
 	fi
 	# TODO throw error if output is not either NOTRUNNING or RUNNING
-	echo "I just started the gitlab server if it was not yet running."
 }
 
 start_and_monitor_tor_connection(){
