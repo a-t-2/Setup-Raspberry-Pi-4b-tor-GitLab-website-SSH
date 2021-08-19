@@ -38,3 +38,5 @@ source uninstall.sh
 	run bash -c "./uninstall.sh -h  <<< n"
 	assert_output "The GitLab server was NOT uninstalled"
 }
+
+# TODO: verify output message for incorrect argument usage

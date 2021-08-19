@@ -4,5 +4,6 @@
 #./test/libs/bats/bin/bats test/test_install_and_boot_gitlab_server.bats
 #./test/libs/bats/bin/bats test/test_install_ssh_over_tor.bats
 #./test/libs/bats/bin/bats test/test_src_helper.bats
-./test/libs/bats/bin/bats test/test_uninstall.bats
+#./test/libs/bats/bin/bats test/test_uninstall.bats
 #./test/libs/bats/bin/bats test/test_boot_tor.bats
+./test/libs/bats/bin/bats test/long_test_helper.bats

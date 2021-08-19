@@ -21,7 +21,7 @@ install_and_run_gitlab_server() {
 	# its verified md5sum into hardcoded_variables.txt (possibly adding an if statement 
 	# to get_architecture().)
 	
-	if [ $(gitlab_server_is_running $gitlab_package) == "not_running" ]; then
+	if [ $(gitlab_server_is_running $gitlab_package) == "NOTRUNNING" ]; then
 		#$(install_docker)
 		create_gitlab_folder
 		install_docker
@@ -43,13 +43,6 @@ install_and_run_gitlab_server() {
 create_gitlab_folder() {
 	mkdir -p $GITLAB_HOME
 }
-
-gitlab_server_is_running() {
-	# TODO: determine how to reliably determine if GitLabs server is running
-	gitlab_package=$1
-	echo "not_running"
-}
-
 
 # Install docker:
 install_docker() {

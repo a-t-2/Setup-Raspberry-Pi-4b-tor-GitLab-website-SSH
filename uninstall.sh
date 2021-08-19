@@ -1,7 +1,7 @@
-server_soft_flag=''
-server_hard_flag=''
-server_hard_yes_flag=''
-runner_flag=''
+server_soft_flag='false'
+server_hard_flag='false'
+server_hard_yes_flag='false'
+runner_flag='false'
 
 #verbose='false'
 
@@ -50,7 +50,7 @@ if [ "$server_soft_flag" == "true" ]; then
 	uninstall_gitlab_runner
 fi
 
-if [ "$server_hard_flag" == "true" ]; then
+if [ "$server_hard_flag" == "true" ] && [ "$server_hard_yes_flag" == "false" ]; then
 	read -p "Do you wish to uninstall GitLab and remove all its repositories, issues, users and server settings?" yn
 	case $yn in
 		[Yy]* ) uninstall_gitlab_runner "true";;
@@ -60,24 +60,15 @@ if [ "$server_hard_flag" == "true" ]; then
 	esac
 fi
 
-# arguments:
-# TODO: check if the GitLab server is already running.
-#
-#uninstall_gitlab_server
+if [ "$server_hard_flag" == "true" ] && [ "$server_hard_yes_flag" == "true" ]; then
+	uninstall_gitlab_runner "true"
+	echo "Performed hard uninstallation of GitLab server and all its repositories, settings etc."
+fi
 
-
-
-#source src/install_and_run_gitlab_runner.sh
-#$(install_gitlab_runner amd64)
 
 # TODO: 
 # call the script that installs tor and ssh for the username
-# ensure the docker id is gotten correctly.
-# set the gitlab root password at the creation of the GitLab server
-# call the gitlab runner installation
 # Create a cronjob that starts the tor ssh service at startup
 # TODO: remove the infintely growing list of responses in the tor_ssh script
-# TODO; get a quick test to check if the gitlab server is up.
-# TODO: get a quick test to check if the gitlab runner is up.
 # TODO: reboot the device if the Gitlab server is down.
 # TODO: reboot the device if the Gitlab runner is down.
