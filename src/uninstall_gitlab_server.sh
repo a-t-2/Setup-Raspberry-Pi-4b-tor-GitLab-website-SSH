@@ -13,22 +13,27 @@ source src/helper.sh
 source src/hardcoded_variables.txt
 
 uninstall_gitlab_server() {
+	is_hard_uninstall=$1
+	is_docker_uninstall=$2
+	
 	gitlab_package=$(get_gitlab_package)
-		# TODO: only uninstall docker if an explicit argument for uninstallation is passed. 
-		# it is too likely that docker is also used for other software.
-		#$(uninstall_docker)
-		#$(uninstall_docker_compose)
-		
-		
-		stop_docker
-		stop_gitlab_package_docker $gitlab_package
-		remove_gitlab_package_docker $gitlab_package
-		remove_gitlab_docker_containers
-		stop_apache_service
-		stop_nginx_service
-		stop_nginx
+	
+	# TODO: only uninstall docker if an explicit argument for uninstallation is passed. 
+	# it is too likely that docker is also used for other software.
+	#$(uninstall_docker)
+	#$(uninstall_docker_compose)
+	
+	
+	stop_docker
+	stop_gitlab_package_docker $gitlab_package
+	remove_gitlab_package_docker $gitlab_package
+	remove_gitlab_docker_containers
+	stop_apache_service
+	stop_nginx_service
+	stop_nginx
+	if [ "$is_hard_uninstall" == true ]; then
 		delete_gitlab_folder
-		#output=$(run_gitlab_docker $GITLAB_SERVER $GITLAB_PORT_1 $GITLAB_PORT_2 $GITLAB_HOME)
+	fi
 }
 
 

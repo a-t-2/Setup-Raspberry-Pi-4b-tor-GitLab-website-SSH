@@ -40,11 +40,29 @@ if [ "$server_hard_yes_flag" == "true" ] && [ "$server_soft_flag" == "true" ]; t
 	echo "ERROR, you chose to manually override the prompt for the soft uninstallation, but the soft uninstallation does not not prompt for confirmation."
 	exit 1
 fi
-#echo "done"
+
+# Check if runner is being uninstalled:
+if [ "$runner_flag" == "true" ]; then
+	uninstall_gitlab_runner
+fi
+
+if [ "$server_soft_flag" == "true" ]; then
+	uninstall_gitlab_runner
+fi
+
+if [ "$server_hard_flag" == "true" ]; then
+	read -p "Do you wish to uninstall GitLab and remove all its repositories, issues, users and server settings?" yn
+	case $yn in
+		[Yy]* ) uninstall_gitlab_runner "true";;
+		[Nn]* ) echo "The GitLab server was NOT uninstalled"; exit 0;;
+		* ) echo "Please answer yes or no."
+		exit 1;;
+	esac
+fi
 
 # arguments:
 # TODO: check if the GitLab server is already running.
-#uninstall_gitlab_runner
+#
 #uninstall_gitlab_server
 
 
