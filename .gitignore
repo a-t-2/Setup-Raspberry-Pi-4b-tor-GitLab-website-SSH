@@ -27,4 +27,6 @@ gitlab-header.txt
 test/timestamp.txt
 
 # code to get runner registration token
-get_runner_token/*
+get-gitlab-runner-registration-token/*
+get-gitlab-runner-registration-token
+src/runner_registration_token.txt

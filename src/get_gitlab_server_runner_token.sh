@@ -27,7 +27,15 @@ get_gitlab_server_runner_token_log() {
 	# 3. send curl GET request to gitlab runners page to get registration token
 	body_header=$(curl -sS -k -H 'user-agent: curl' -b "$LOG_LOCATION"gitlab-cookies.txt "${GITURL}/admin/runners" -o "$LOG_LOCATION"gitlab-header.txt)
 	echo "body_header=$body_header"
-	reg_token=$(cat "$LOG_LOCATION"gitlab-header.txt | perl -ne 'print "$1\n" if /code id="registration_token">(.+?)</' | sed -n 1p)
+	
+	if [ "$body_header" == "" ]; then
+		reg_token=get_registration_token_with_python
+	else
+		reg_token=$(cat "$LOG_LOCATION"gitlab-header.txt | perl -ne 'print "$1\n" if /code id="registration_token">(.+?)</' | sed -n 1p)
+	fi
+	if [ "$reg_token" == "" ]; then
+		exit 1
+	fi
 	echo $reg_token
 }
 
@@ -57,4 +65,17 @@ get_gitlab_server_runner_token() {
 	echo $reg_token
 	# TODO: restore the functionality of this method!
 	#echo "sPgAnNea3WxvTRsZN5hB"
+}
+
+get_registration_token_with_python() {
+	# delete the runner registration token file if it exist
+	if [ -f "$RUNNER_REGISTRATION_TOKEN_FILEPATH" ] ; then
+	    rm "$RUNNER_REGISTRATION_TOKEN_FILEPATH"
+	fi
+	
+	
+	git clone https://github.com/a-t-0/get-gitlab-runner-registration-token.git &&
+	set +e
+	cd get-gitlab-runner-registration-token && python -m code.project1.src
+	cd ..
 }

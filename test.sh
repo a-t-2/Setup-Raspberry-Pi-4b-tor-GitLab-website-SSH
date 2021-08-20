@@ -7,4 +7,5 @@
 #./test/libs/bats/bin/bats test/test_uninstall.bats
 #./test/libs/bats/bin/bats test/test_boot_tor.bats
 #./test/libs/bats/bin/bats test/long_test_helper.bats
-./test/libs/bats/bin/bats test/long_test_boot_tor.bats
+#./test/libs/bats/bin/bats test/long_test_boot_tor.bats
+./test/libs/bats/bin/bats test/test_get_gitlab_server_runner_token.bats
