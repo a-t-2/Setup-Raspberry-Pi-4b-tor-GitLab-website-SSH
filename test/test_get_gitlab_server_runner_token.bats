@@ -13,5 +13,6 @@ source src/hardcoded_variables.txt
 	actual_result=$(cat $RUNNER_REGISTRATION_TOKEN_FILEPATH)
 	EXPECTED_OUTPUT="somecode"
 
-	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+	assert_file_exist $RUNNER_REGISTRATION_TOKEN_FILEPATH
+	assert_equal ${#actual_result}   20
 }

@@ -111,22 +111,39 @@ get_line_nr() {
 get_line_by_nr() {
 	number=$1
 	REL_FILEPATH=$2
+	#read -p "number=$number"
+	#read -p "REL_FILEPATH=$REL_FILEPATH"
 	the_line=$(sed "${number}q;d" $REL_FILEPATH)
 	echo $the_line
 }
 
 get_first_line_containing_substring() {
+	
 	eval REL_FILEPATH="$1"	
 	eval identification_str="$2"
 	
 	# Get line containing <code id="registration_token">
-	if [ "$(file_contains_string "$identification_str_p1" "$REL_FILEPATH")" == "FOUND" ]; then
+	if [ "$(file_contains_string "$identification_str" "$REL_FILEPATH")" == "FOUND" ]; then
 		line_nr=$(get_line_nr "\${identification_str}" $REL_FILEPATH)
-		line=$(get_line_by_nr $line_nr $REL_FILEPATH)
-		echo "$line"
+		if [ "$line_nr" != "" ]; then
+			#read -p "ABOVE and line_nr=$line_nr"
+			line=$(get_line_by_nr $line_nr $REL_FILEPATH)
+			#read -p "BELOW"
+			echo "$line"
+		else
+			# TODO: raise error
+			#read -p "ERROR1, identification str ="
+			#read -p "\${identification_str}"
+			#read -p "filepath=$filepath"
+			#read -p "And filecontent=$(cat $REL_FILEPATH)"
+			exit 1
+		fi
 	else
 		# TODO: raise error
-		echo "ERROR"
+		#read -p "ERROR2, identification str = \${identification_str}"
+		#read -p "filepath=$filepath"
+		#read -p "And filecontent=$(cat $REL_FILEPATH)"
+		exit 1
 	fi
 }
 
@@ -137,6 +154,9 @@ get_lhs_of_line_till_character() {
 	
 	# TODO: implement
 	#lhs=${line%$character*}
+	#read -p "line=$line"
+	#read -p "character=$character"
+
 	lhs=$(cut -d "$character" -f1 <<< "$line")
 	echo $lhs
 }
@@ -159,17 +179,18 @@ get_docker_container_id_of_gitlab_server() {
 	# TODO: select gitlab_package substring rhs up to / (the sed command does not handle this well)
 	# TODO: OR replace / with \/ (that works)
 	identification_str=$(get_rhs_of_line_till_character "$gitlab_package" "/")
-	
+
 	# write output to file
 	output=$(sudo docker ps -a > $log_filepath)
-	
 	# Get line with "gitlab/gitlab-ce:latest" (package name depending on architecture).
 	line=$(get_first_line_containing_substring "$log_filepath" "\${identification_str}")
 	#echo "line=$line"
 	
+	
 	# Get container id of the line containing the id.
 	container_id=$(get_lhs_of_line_till_character "$line" "$space")
-	
+	#read -p "CONFIRM BELOW in, container_id=$container_id"
+
 	# delete the file as cleanup if it exist
 	if [ -f "$log_filepath" ] ; then
 	    rm "$log_filepath"
@@ -200,7 +221,9 @@ check_gitlab_runner_status() {
 #sudo docker exec -i 79751949c099 bash -c "gitlab-rails status"
 #sudo docker exec -i 79751949c099 bash -c "gitlab-ctl status"
 check_gitlab_server_status() {
+	##read -p "CONFIRM ABOVE check"
 	container_id=$(get_docker_container_id_of_gitlab_server)
+	#read -p "CONFIRM BELOW check and container_id=$container_id"
 	#echo "container_id=$container_id"
 	status=$(sudo docker exec -i "$container_id" bash -c "gitlab-ctl status")
 	echo "$status"
@@ -246,7 +269,7 @@ gitlab_runner_is_running() {
 
 check_for_n_seconds_if_gitlab_server_is_running() {
 	duration=$1
-	echo "duration=$duration"
+	#echo "duration=$duration"
 	running="false"
 	end=$(("$SECONDS" + "$duration"))
 	while [ $SECONDS -lt $end ]; do

@@ -29,11 +29,13 @@ get_gitlab_server_runner_token_log() {
 	echo "body_header=$body_header"
 	
 	if [ "$body_header" == "" ]; then
-		reg_token=get_registration_token_with_python
+		get_registration_token_with_python
+		reg_token=$(cat $RUNNER_REGISTRATION_TOKEN_FILEPATH)
 	else
 		reg_token=$(cat "$LOG_LOCATION"gitlab-header.txt | perl -ne 'print "$1\n" if /code id="registration_token">(.+?)</' | sed -n 1p)
 	fi
 	if [ "$reg_token" == "" ]; then
+		echo "ERROR, would have expected the runner registration token to be found by now, but it was not."
 		exit 1
 	fi
 	echo $reg_token

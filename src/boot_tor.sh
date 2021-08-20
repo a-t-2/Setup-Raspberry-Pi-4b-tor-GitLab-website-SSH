@@ -61,7 +61,6 @@ started_less_than_n_seconds_ago() {
 		# get results and specify expected result.
 		timestamp_time=$(cat "$timestamp_filepath")
 		current_time=$[$(date +%s)]
-
 		timestamp_age="$(echo $current_time $timestamp_time-p | dc)"
 		
 		# Was the timestamp created less than n_seconds ago?
@@ -131,8 +130,9 @@ run_deployment_script_for_n_seconds() {
 	while [ $SECONDS -lt $end ]; do
 		if [ $(gitlab_server_is_running | tail -1) == "RUNNING" ]; then
 			if [ $(gitlab_runner_is_running | tail -1) == "RUNNING" ]; then
-				echo "RUNNING"; break;
 				running="true"
+				echo "RUNNING";
+				break;
 			else 
 				deploy_gitlab
 			fi
