@@ -25,3 +25,6 @@ gitlab-header.txt
 
 # test_artifacts
 test/timestamp.txt
+
+# code to get runner registration token
+get_runner_token/*
