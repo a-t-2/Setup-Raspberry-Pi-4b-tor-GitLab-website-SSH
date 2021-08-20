@@ -7,6 +7,7 @@ source src/helper.sh
 source src/hardcoded_variables.txt
 source src/get_gitlab_server_runner_token.sh
 
+# TODO: change to install and boot
 install_and_run_gitlab_runner() {
 	arch=get_architecture
 	# TODO: verify if architecture is supported, raise error if not
@@ -15,7 +16,7 @@ install_and_run_gitlab_runner() {
 	# its verified md5sum into hardcoded_variables.txt (possibly adding an if statement 
 	# to get_architecture().)
 	
-	if [ $(gitlab_runner_is_running $arch) == "not_running" ]; then
+	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
 		get_runner_package $arch
 		install_package $arch
 		register_gitlab_runner
@@ -24,6 +25,7 @@ install_and_run_gitlab_runner() {
 		start_gitlab_runner_service
 		run_gitlab_runner_service
 	fi
+	echo "COMPLETED RUNNER INSTALLATION."
 }
 
 extract_runner_token_from_source() {
@@ -112,6 +114,7 @@ register_gitlab_runner() {
 	executor=shell
 	dockerimage="ruby:2.6"
 	runner_token=$(get_gitlab_server_runner_token)
+	echo "runner_token=$runner_token"
 
 	# Command to run runner in Docker (won't access the machine localhost this way/doesn't work).
 	#registration=$(sudo gitlab-runner register \

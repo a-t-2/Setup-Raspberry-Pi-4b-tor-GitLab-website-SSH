@@ -3,11 +3,42 @@
 source src/hardcoded_variables.txt
 source src/creds.txt
 
-get_gitlab_server_runner_token() {
-	GITURL=$GITLAB_SERVER_HTTP_URL
-	GITUSER=$gitlab_server_account
-	GITROOTPWD=$gitlab_server_password
+get_gitlab_server_runner_token_log() {
+	GITURL="$GITLAB_SERVER_HTTP_URL"
+	GITUSER="$gitlab_server_account"
+	GITROOTPWD="$gitlab_server_password"
+	echo "GITUSER=$GITUSER"
+	echo "GITROOTPWD=$GITROOTPWD"
 	
+	# 1. curl for the login page to get a session cookie and the sources with the auth tokens
+	body_header=$(curl -k -c "$LOG_LOCATION"gitlab-cookies.txt -i "${GITURL}/users/sign_in" -sS)
+	#echo "body_header=$body_header"
+	
+	# grep the auth token for the user login for
+	#   not sure whether another token on the page will work, too - there are 3 of them
+	csrf_token=$(echo $body_header | perl -ne 'print "$1\n" if /new_user.*?authenticity_token"[[:blank:]]value="(.+?)"/' | sed -n 1p)
+	echo "csrf_token=$csrf_token"
+	
+	# 2. send login credentials with curl, using cookies and token from previous request
+	curl -sS -k -b "$LOG_LOCATION"gitlab-cookies.txt -c "$LOG_LOCATION"gitlab-cookies.txt "${GITURL}/users/sign_in" \
+		--data "user[login]=${GITUSER}&user[password]=${GITROOTPWD}" \
+		--data-urlencode "authenticity_token=${csrf_token}"  -o /dev/null
+	
+	# 3. send curl GET request to gitlab runners page to get registration token
+	body_header=$(curl -sS -k -H 'user-agent: curl' -b "$LOG_LOCATION"gitlab-cookies.txt "${GITURL}/admin/runners" -o "$LOG_LOCATION"gitlab-header.txt)
+	echo "body_header=$body_header"
+	reg_token=$(cat "$LOG_LOCATION"gitlab-header.txt | perl -ne 'print "$1\n" if /code id="registration_token">(.+?)</' | sed -n 1p)
+	echo $reg_token
+}
+
+
+get_gitlab_server_runner_token() {
+	GITURL="$GITLAB_SERVER_HTTP_URL"
+	GITUSER="$gitlab_server_account"
+	GITROOTPWD="$gitlab_server_password"
+	#echo "GITUSER=$GITUSER"
+	#echo "GITROOTPWD=$GITROOTPWD"
+
 	# 1. curl for the login page to get a session cookie and the sources with the auth tokens
 	body_header=$(curl -k -c gitlab-cookies.txt -i "${GITURL}/users/sign_in" -sS)
 	
@@ -24,4 +55,6 @@ get_gitlab_server_runner_token() {
 	body_header=$(curl -sS -k -H 'user-agent: curl' -b gitlab-cookies.txt "${GITURL}/admin/runners" -o gitlab-header.txt)
 	reg_token=$(cat gitlab-header.txt | perl -ne 'print "$1\n" if /code id="registration_token">(.+?)</' | sed -n 1p)
 	echo $reg_token
+	# TODO: restore the functionality of this method!
+	#echo "sPgAnNea3WxvTRsZN5hB"
 }

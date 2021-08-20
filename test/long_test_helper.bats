@@ -8,9 +8,8 @@ source src/helper.sh
 
 @test "If error is thrown if the GitLab server is not running within 5 seconds after uninstallation." {
 	# uninstall the GitLab server and runners.
-	run bash -c "./uninstall.sh -h -r -y"
-	# TODO: determine why uninstal does not stop the server directly
-		
+	run bash -c "./uninstall_gitlab.sh -h -r -y"
+	
 	# Specify how long to test/wait on the GitLab server to get up and running
 	duration=4
 		
@@ -24,8 +23,7 @@ source src/helper.sh
 
 @test "Test if the function correctly identifies that the GitLab server is running within 300 seconds after installation." {
 	# uninstall the GitLab server and runners.
-	# TODO: change uninstall.sh to uninstall_gitlab.sh
-	run bash -c "./uninstall.sh -h -r -y"
+	run bash -c "./uninstall_gitlab.sh -h -r -y"
 	# install the gitlab runner
 	run bash -c "./install_gitlab.sh -s"
 	
