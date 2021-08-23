@@ -132,7 +132,7 @@ get_first_line_containing_substring() {
 			echo "$line"
 		else
 			# TODO: raise error
-			#read -p "ERROR1, identification str ="
+			read -p "ERROR, did find the string in the file but did not find the line number, identification str =\${identification_str} And filecontent=$(cat $REL_FILEPATH)"
 			#read -p "\${identification_str}"
 			#read -p "filepath=$filepath"
 			#read -p "And filecontent=$(cat $REL_FILEPATH)"
@@ -140,7 +140,7 @@ get_first_line_containing_substring() {
 		fi
 	else
 		# TODO: raise error
-		#read -p "ERROR2, identification str = \${identification_str}"
+		read -p "ERROR, did not find the string in the file identification str =\${identification_str} And filecontent=$(cat $REL_FILEPATH)"
 		#read -p "filepath=$filepath"
 		#read -p "And filecontent=$(cat $REL_FILEPATH)"
 		exit 1
