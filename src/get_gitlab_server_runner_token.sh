@@ -2,6 +2,7 @@
 # Source: https://github.com/MxNxPx/gitlab-cicd-demo/blob/aee86e45f5bc603a5055f0cd391cd6b184f1d6c3/get-runner-reg.sh
 source src/hardcoded_variables.txt
 source src/creds.txt
+source src/helper.sh
 
 get_gitlab_server_runner_tokenV1() {
 	GITURL="$GITLAB_SERVER_HTTP_URL"
@@ -78,10 +79,19 @@ get_registration_token_with_python() {
 	
 	git clone https://github.com/a-t-0/get-gitlab-runner-registration-token.git &&
 	set +e
-	read -p "GOT THE GIT REPO"
+	#read -p "GOT THE GIT REPO"
 	
 	# TODO: turn batch_copy_issues into variable
-	cd get-gitlab-runner-registration-token && conda env create --file environment.yml && conda activate batch_copy_issues && python -m code.project1.src
+	conda_environments=$(conda env list) 
+	read -p "conda_environments=$conda_environments"
+	read -p "CONDA_ENVIRONMENT_NAME=$CONDA_ENVIRONMENT_NAME"
+	
+	read -p "Has environment =$(lines_contain_string "$CONDA_ENVIRONMENT_NAME" "\${conda_environments}")"
+	if [ $(lines_contain_string "$CONDA_ENVIRONMENT_NAME" "\${conda_environments}") == "FOUND" ]; then
+		cd get-gitlab-runner-registration-token && conda activate batch_copy_issues && python -m code.project1.src
+	else
+		cd get-gitlab-runner-registration-token && conda env create --file environment.yml && conda activate batch_copy_issues && python -m code.project1.src
+	fi
 	read -p "RAN THE GET TOKEN CODE"
 	cd ..
 	read -p "BROWSED BACK UP"
