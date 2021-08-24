@@ -209,3 +209,69 @@ source test/hardcoded_testdata.txt
 		assert_equal "The gitlab runner is not running." "To use this test, you should ensure the runner is running."
 	fi
 }
+
+
+@test "Line 1 is returrend correctly." {
+	lines=$(printf 'First line\nsecond line \nthird line \nsometoken')
+	
+	actual_result=$(get_line_by_nr_from_variable 1 "\${lines}")
+	EXPECTED_OUTPUT="First line"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Line 2 is returrend correctly." {
+	lines=$(printf 'First line\nsecond line \nthird line \nsometoken')
+	
+	actual_result=$(get_line_by_nr_from_variable 2 "\${lines}")
+	EXPECTED_OUTPUT="second line "
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Line 3 is returrend correctly." {
+	lines=$(printf 'First line\nsecond line \nthird line \nsometoken')
+	
+	actual_result=$(get_line_by_nr_from_variable 3 "\${lines}")
+	EXPECTED_OUTPUT="third line "
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Line 4 is returrend correctly." {
+	lines=$(printf 'First line\nsecond line \nthird line \nsometoken')
+	
+	actual_result=$(get_line_by_nr_from_variable 4 "\${lines}")
+	EXPECTED_OUTPUT="sometoken"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Line four is returrend correctly." {
+	lines=$(printf 'First line\nsecond line \nthird line \nsometoken')
+	
+	line_nr="4"
+	
+	actual_result=$(get_line_by_nr_from_variable "$line_nr" "\${lines}")
+	EXPECTED_OUTPUT="sometoken"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Number of lines is returrend correctly." {
+	lines=$(printf 'First line\nsecond line \nthird line \nsometoken')
+	
+	actual_result=$(get_nr_of_lines_in_var "\${lines}")
+	EXPECTED_OUTPUT="4"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Last line is returrend correctly." {
+	lines=$(printf 'First line\nsecond line \nthird line \nsometoken')
+	
+	actual_result=$(get_last_line_of_set_of_lines "\${lines}")
+	EXPECTED_OUTPUT="sometoken"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}

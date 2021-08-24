@@ -130,6 +130,19 @@ get_line_by_nr() {
 	echo $the_line
 }
 
+get_line_by_nr_from_variable() {
+	number=$1
+	eval lines=$2
+	
+	count=0
+	while IFS= read -r line; do
+		count=$((count+1))
+		if [ "$count" -eq "$number" ]; then
+			echo "$line"
+		fi
+	done <<< "$lines"
+}
+
 get_first_line_containing_substring() {
 	# Returns the first line in a file that contains a substring, silent otherwise.
 	eval REL_FILEPATH="$1"
@@ -294,6 +307,17 @@ check_for_n_seconds_if_gitlab_server_is_running() {
 	fi
 }
 
+get_nr_of_lines_in_var() {
+	eval lines=$1
+	echo "$lines" | wc -l
+}
+
 get_last_line_of_set_of_lines() {
-	pass
+	eval lines=$1
+	set -f # disable glob (wildcard) expansion
+	IFS=$'\n' # let's make sure we split on newline chars
+	var=(${lines}) # parse the lines into a variable that is countable
+	nr_of_lines=${#var[@]}
+	last_line=$(get_line_by_nr_from_variable "$nr_of_lines" "\${lines}")
+	echo "$last_line"
 }
