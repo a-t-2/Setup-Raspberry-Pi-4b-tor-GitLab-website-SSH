@@ -9,7 +9,7 @@ source src/get_gitlab_server_runner_token.sh
 
 # TODO: change to install and boot
 install_and_run_gitlab_runner() {
-	arch=get_architecture
+	arch=$(get_architecture)
 	# TODO: verify if architecture is supported, raise error if not
 	# TODO: Mention that support for the architecture can be gained by
 	# downloading the right GitLab Runner installation package and adding
@@ -18,46 +18,17 @@ install_and_run_gitlab_runner() {
 	
 	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
 		get_runner_package $arch
+		#read -p "got package"
 		install_package $arch
+		read -p "installed package"
 		register_gitlab_runner
+		read -p "registered package"
 		create_gitlab_ci_user
 		install_gitlab_runner_service
 		start_gitlab_runner_service
 		run_gitlab_runner_service
 	fi
 	echo "COMPLETED RUNNER INSTALLATION."
-}
-
-extract_runner_token_from_source() {
-	source_filepath="$LOG_LOCATION$RUNNER_SOURCE_FILENAME"
-	identification_str='<code id="registration_token">'
-	end_str="</code>"
-	
-	# Remove old log files if exist
-	if [ -f "$source_filepath" ] ; then
-	    rm "$source_filepath"
-	fi
-	
-	# download website
-	get_website=$(downoad_website_source "$GITLAB_SERVER" "$source_filepath")
-	# Source: https://forum.gitlab.com/t/access-token-with-curl-is-redirecting-to-log-in-page-was-working-previously/21309
-	#https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12458
-	# https://stackoverflow.com/questions/31805041/how-to-access-gitlab-issues-using-curl
-	# https://gist.github.com/michaellihs/5ef5e8dbf48e63e2172a573f7b32c638
-	curl -vk --header "PRIVATE-TOKEN: MY.TOKEN.HERE" https://gitlab.SOMEWHERE.com/api/v3
-	curl -vk --header "PRIVATE-TOKEN: 9r6sPoAx3BFqZnxfexLS" http://127.0.0.1/admin/runners
-	curl -vk --header "PRIVATE-TOKEN: token-string-here123" http://127.0.0.1/admin/runners
-	
-	# TODO: call function to get line
-	
-	
-	# TODO: call function to get code
-}
-
-gitlab_runner_is_running() {
-	# TODO: determine how to reliably determine if GitLabs server is running
-	arch=$1
-	echo "not_running"
 }
 
 
@@ -68,7 +39,11 @@ get_runner_package() {
 	
 	# Get the hardcoded/expected checksum and verify if the file already is downloaded.
 	expected_checksum=$(get_expected_md5sum_of_gitlab_runner_installer_for_architecture $arch)
+	read -p "expected_checksum=$expected_checksum"
+	
+	# Download GitLab runner installer package if it is not yet found
 	if [ $(check_md5_sum "$expected_checksum" "gitlab-runner_${arch}.deb") != "EQUAL" ]; then
+		read -p "DID NOT got the actual checksum!"
 		# install curl
 		install_curl=$(yes | sudo apt install curl)
 		
@@ -79,7 +54,13 @@ get_runner_package() {
 		curl_command=$(curl -LJO "$url")
 		
 		# Optional: if x86_64 curl from:
-		#https://archlinux.org/packages/community/x86_64/gitlab-runner/download	
+		#https://archlinux.org/packages/community/x86_64/gitlab-runner/download
+	fi
+	
+	# Verify the downloaded package is retrieved
+	if [ $(check_md5_sum "$expected_checksum" "gitlab-runner_${arch}.deb") != "EQUAL" ]; then
+		echo "ERROR, the md5 checksum of the downloaded GitLab installer package does not match the expected md5 checksum, perhaps the download was interrupted."
+		exit 1
 	fi
 	
 	# make it executable
@@ -92,8 +73,8 @@ install_package() {
 	arch=$1
 	filename="gitlab-runner_"$arch".deb"
 	echo "filename=$filename"
-	#install=$(sudo dpkg -i "$filename")
-	install=$(dpkg -i "$filename")
+	install=$(sudo dpkg -i "$filename")
+	#install=$(dpkg -i "$filename")
 	echo "install=$install"
 }
 #TODO: reverse installation
@@ -157,7 +138,8 @@ install_gitlab_runner_service() {
 		added_runner_to_visudo=$(visudo_contains "$visudo_line" "$filepath")
 		if [  "$added_runner_to_visudo" == "NOTFOUND" ]; then
 			# TODO: raise exception
-			echo "ERROR"
+			echo "ERROR, did not find the visudo user thatwas added"
+			#exit 1
 		fi
 	fi
 }

@@ -22,7 +22,8 @@ install_and_run_gitlab_server() {
 	# to get_architecture().)
 	
 	if [ $(gitlab_server_is_running $gitlab_package) == "NOTRUNNING" ]; then
-		#$(install_docker)
+		install_docker
+		create_log_folder
 		create_gitlab_folder
 		install_docker
 		install_docker_compose
@@ -39,6 +40,9 @@ install_and_run_gitlab_server() {
 	fi
 }
 
+create_log_folder() {
+	mkdir -p $LOG_LOCATION
+}
 
 create_gitlab_folder() {
 	mkdir -p $GITLAB_HOME

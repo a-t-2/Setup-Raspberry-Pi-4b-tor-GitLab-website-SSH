@@ -78,9 +78,13 @@ get_registration_token_with_python() {
 	
 	git clone https://github.com/a-t-0/get-gitlab-runner-registration-token.git &&
 	set +e
+	read -p "GOT THE GIT REPO"
+	
 	# TODO: turn batch_copy_issues into variable
 	cd get-gitlab-runner-registration-token && conda activate batch_copy_issues && python -m code.project1.src
+	read -p "RAN THE GET TOKEN CODE"
 	cd ..
+	read -p "BROWSED BACK UP"
 }
 
 

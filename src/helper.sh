@@ -11,6 +11,8 @@ get_architecture() {
 	# Source: https://stackoverflow.com/questions/65450286/how-to-install-gitlab-runner-to-centos-fedora
 	if [ "$architecture"=="x86_64" ]; then
 		architecture=amd64
+	else
+		read -p "ERROR, did not yet find GitLab installation package and GitLab runner installation package for this architecture:$architecture"
 	fi
 	
 	echo $architecture
@@ -48,8 +50,8 @@ get_expected_md5sum_of_gitlab_runner_installer_for_architecture() {
 	if [ "$arch" == "amd64" ]; then
 		echo $x86_64_runner_checksum
 	else
-		read -p "ERROR, the md5 checksum of the downloaded GitLab installer package does not match the expected md5 checksum, perhaps the download was interrupted."
-		exit 1
+		read -p "ERROR, this architecture:$arch is not yet supported by this repository, meaning we did not yet find a GitLab runner package for this architecture. So there is no md5sum available for verification of the md5 checksum of such a downloaded package."
+		#exit 1
 	fi
 }
 
