@@ -8,8 +8,8 @@ get_gitlab_server_runner_tokenV1() {
 	GITURL="$GITLAB_SERVER_HTTP_URL"
 	GITUSER="$gitlab_server_account"
 	GITROOTPWD="$gitlab_server_password"
-	echo "GITUSER=$GITUSER"
-	echo "GITROOTPWD=$GITROOTPWD"
+	#echo "GITUSER=$GITUSER"
+	#echo "GITROOTPWD=$GITROOTPWD"
 	
 	# 1. curl for the login page to get a session cookie and the sources with the auth tokens
 	body_header=$(curl -k -c "$LOG_LOCATION"gitlab-cookies.txt -i "${GITURL}/users/sign_in" -sS)
@@ -18,7 +18,7 @@ get_gitlab_server_runner_tokenV1() {
 	# grep the auth token for the user login for
 	#   not sure whether another token on the page will work, too - there are 3 of them
 	csrf_token=$(echo $body_header | perl -ne 'print "$1\n" if /new_user.*?authenticity_token"[[:blank:]]value="(.+?)"/' | sed -n 1p)
-	echo "csrf_token=$csrf_token"
+	#echo "csrf_token=$csrf_token"
 	
 	# 2. send login credentials with curl, using cookies and token from previous request
 	curl -sS -k -b "$LOG_LOCATION"gitlab-cookies.txt -c "$LOG_LOCATION"gitlab-cookies.txt "${GITURL}/users/sign_in" \
@@ -27,11 +27,12 @@ get_gitlab_server_runner_tokenV1() {
 	
 	# 3. send curl GET request to gitlab runners page to get registration token
 	body_header=$(curl -sS -k -H 'user-agent: curl' -b "$LOG_LOCATION"gitlab-cookies.txt "${GITURL}/admin/runners" -o "$LOG_LOCATION"gitlab-header.txt)
-	echo "body_header=$body_header"
+	#read -p "body_header=$body_header"
 	
 	if [ "$body_header" == "" ]; then
 		get_registration_token_with_python
 		reg_token=$(cat $RUNNER_REGISTRATION_TOKEN_FILEPATH)
+		#read -p "Got reg token=$reg_token"
 	else
 		reg_token=$(cat "$LOG_LOCATION"gitlab-header.txt | perl -ne 'print "$1\n" if /code id="registration_token">(.+?)</' | sed -n 1p)
 	fi
@@ -39,7 +40,8 @@ get_gitlab_server_runner_tokenV1() {
 		echo "ERROR, would have expected the runner registration token to be found by now, but it was not."
 		#exit 1
 	fi
-	echo $reg_token
+	#read -p "Returning reg token=$reg_token"
+	echo "$reg_token"
 }
 
 

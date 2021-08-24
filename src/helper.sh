@@ -293,3 +293,7 @@ check_for_n_seconds_if_gitlab_server_is_running() {
 		exit 1
 	fi
 }
+
+get_last_line_of_set_of_lines() {
+	pass
+}

@@ -18,9 +18,9 @@ install_and_run_gitlab_runner() {
 	
 	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
 		get_runner_package $arch
-		read -p "got package"
+		#read -p "got package"
 		install_package $arch
-		read -p "installed package"
+		#read -p "installed package"
 		register_gitlab_runner
 		read -p "registered package"
 		create_gitlab_ci_user
@@ -98,7 +98,28 @@ register_gitlab_runner() {
 	executor=shell
 	dockerimage="ruby:2.6"
 	runner_token=$(get_gitlab_server_runner_tokenV1)
-	echo "runner_token=$runner_token"
+	read -p "after function\n\n\n=$runner_token"
+	read -p "NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOWWW PROCESSING"
+	try1=$($runner_token | tail -1)
+	read -p "try1=$try1"
+	try2=$("$runner_token" | tail -1)
+	read -p "try1=$try2"
+	try3=$(runner_token | tail -1)
+	read -p "try1=$try3"
+	try4="$(runner_token | tail -1)"
+	read -p "try1=$try4"
+	try5=echo "$runner_token | tail -1"
+	read -p "try1=$try5"
+	try6=runner_token | tail -1
+	read -p "try1=$try6"
+	read -p "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCLOSEE"
+	#exit 64 
+	
+	runner_token_tail=$($runner_token | tail -1)
+	runner_token="$runner_token_tail"
+	read -p "RUNNER TOKEN  \n\n\n=$runner_token"
+	read -p "RUNNER TOKEN TAIL \n\n\n=$runner_token_tail"
+	
 
 	# Command to run runner in Docker (won't access the machine localhost this way/doesn't work).
 	#registration=$(sudo gitlab-runner register \
