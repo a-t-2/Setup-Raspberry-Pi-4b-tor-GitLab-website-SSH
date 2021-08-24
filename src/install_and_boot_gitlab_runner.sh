@@ -113,7 +113,7 @@ register_gitlab_runner() {
 	description=trucolrunner
 	executor=shell
 	dockerimage="ruby:2.6"
-	runner_token=$(get_gitlab_server_runner_token_log)
+	runner_token=$(get_gitlab_server_runner_tokenV1)
 	echo "runner_token=$runner_token"
 
 	# Command to run runner in Docker (won't access the machine localhost this way/doesn't work).
