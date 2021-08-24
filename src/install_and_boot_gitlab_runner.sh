@@ -112,6 +112,9 @@ register_gitlab_runner() {
 	read -p "try1=$try5"
 	try6=runner_token | tail -1
 	read -p "try1=$try6"
+	
+	try7=$(get_last_line_of_set_of_lines "\${runner_token}")
+	read -p "try7=$try7"
 	read -p "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCLOSEE"
 	#exit 64 
 	
