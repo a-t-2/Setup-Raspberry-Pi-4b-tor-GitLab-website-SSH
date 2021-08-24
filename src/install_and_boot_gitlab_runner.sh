@@ -22,13 +22,9 @@ install_and_run_gitlab_runner() {
 		install_package $arch
 		#read -p "installed package"
 		register_gitlab_runner
-		read -p "registered package"
 		create_gitlab_ci_user
-		read -p "Created ci user"
 		install_gitlab_runner_service
-		read -p "Installed runner service"
 		start_gitlab_runner_service
-		read -p "started runner service"
 		run_gitlab_runner_service
 	fi
 	echo "COMPLETED RUNNER INSTALLATION."
@@ -42,11 +38,9 @@ get_runner_package() {
 	
 	# Get the hardcoded/expected checksum and verify if the file already is downloaded.
 	expected_checksum=$(get_expected_md5sum_of_gitlab_runner_installer_for_architecture $arch)
-	read -p "expected_checksum=$expected_checksum"
 	
 	# Download GitLab runner installer package if it is not yet found
 	if [ $(check_md5_sum "$expected_checksum" "gitlab-runner_${arch}.deb") != "EQUAL" ]; then
-		read -p "DID NOT got the actual checksum!"
 		# install curl
 		install_curl=$(yes | sudo apt install curl)
 		
@@ -97,33 +91,9 @@ register_gitlab_runner() {
 	description=trucolrunner
 	executor=shell
 	dockerimage="ruby:2.6"
-	runner_token=$(get_gitlab_server_runner_tokenV1)
-	read -p "after function\n\n\n=$runner_token"
-	read -p "NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOWWW PROCESSING"
-	try1=$($runner_token | tail -1)
-	read -p "try1=$try1"
-	try2=$("$runner_token" | tail -1)
-	read -p "try1=$try2"
-	try3=$(runner_token | tail -1)
-	read -p "try1=$try3"
-	try4="$(runner_token | tail -1)"
-	read -p "try1=$try4"
-	try5=echo "$runner_token | tail -1"
-	read -p "try1=$try5"
-	try6=runner_token | tail -1
-	read -p "try1=$try6"
+	output=$(get_gitlab_server_runner_tokenV1)
+	runner_token=$(get_last_line_of_set_of_lines "\${output}")
 	
-	try7=$(get_last_line_of_set_of_lines "\${runner_token}")
-	read -p "try7=$try7"
-	read -p "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCLOSEE"
-	#exit 64 
-	
-	runner_token_tail=$($runner_token | tail -1)
-	runner_token="$runner_token_tail"
-	read -p "RUNNER TOKEN  \n\n\n=$runner_token"
-	read -p "RUNNER TOKEN TAIL \n\n\n=$runner_token_tail"
-	
-
 	# Command to run runner in Docker (won't access the machine localhost this way/doesn't work).
 	#registration=$(sudo gitlab-runner register \
 	#--non-interactive \
