@@ -92,7 +92,7 @@ deploy_gitlab() {
 			echo "Starting gitlab server"
 			# start GitLab server
 			output=$(start_gitlab_server "$SERVER_TIMESTAMP_FILEPATH")
-			echo "server start output=$output"
+			read -p "server start output=$output"
 		fi
 	# Check if GitLab server is running, if yes: 
 	elif [ $(gitlab_server_is_running | tail -1) == "RUNNING" ]; then
@@ -114,7 +114,7 @@ deploy_gitlab() {
 			elif [ $(started_less_than_n_seconds_ago $RUNNER_TIMESTAMP_FILEPATH "$RUNNER_STARTUP_TIME_LIMIT") == "NO" ]; then
 				# TODO: check when the last start of the server was initiated, whether the device has been live since, and raise error if runner is still not running by now.
 				# start GitLab runner
-				start_gitlab_runner $RUNNER_TIMESTAMP_FILEPATH
+				start_gitlab_runner "$RUNNER_TIMESTAMP_FILEPATH" &
 				echo "STARTING RUNNER"
 			fi
 		fi	

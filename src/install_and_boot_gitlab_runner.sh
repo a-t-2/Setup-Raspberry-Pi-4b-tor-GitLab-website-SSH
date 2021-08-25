@@ -153,7 +153,8 @@ run_gitlab_runner_service() {
 	#run_command=$(sudo gitlab-runner run &)
 	#run_command=$(sudo gitlab-runner run --user=gitlab-runner &)
 	#run_command=$(sudo gitlab-runner run --user=gitlab-runner)
-	( run_command="$(sudo gitlab-runner run)" ) &
+	#( run_command="$(sudo gitlab-runner run)" ) &
+	output=$(nohup sudo gitlab-runner run &>/dev/null &)
 	#( run_command="$(gitlab-runner run)" ) &
 	#run_command=$(nohup sudo gitlab-runner run > gitlab_runner_run.out &)
 	#run_command=$(nohup sudo gitlab-runner run --user=gitlab-runner &)
