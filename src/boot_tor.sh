@@ -31,7 +31,7 @@ get_tor_status() {
 
 connect_tor() {
 	tor_connection=$(nohup sudo tor > sudo_tor.out &)
-	sleep 10
+	sleep 10 3>- &
 	echo $tor_connection
 }
 
@@ -85,7 +85,7 @@ deploy_gitlab() {
 		# Check if GitLab server has been started in the last 10 minutes, if yes:
 		if [ "$started_server_n_sec_ago" == "YES" ]; then
 			# wait
-			sleep 1
+			sleep 1 3>- &
 		# Check if GitLab server has been started in the last 10 minutes, if no:
 		elif [ "$started_server_n_sec_ago" == "NO" ]; then
 			# TODO: check when the last start of the server was initiated, whether the device has been live since, and raise error if server is still not running by now.
@@ -108,7 +108,7 @@ deploy_gitlab() {
 			echo "runner is not yet running"
 			if [ $(started_less_than_n_seconds_ago $RUNNER_TIMESTAMP_FILEPATH "$RUNNER_STARTUP_TIME_LIMIT") == "YES" ]; then
 				# wait
-				sleep 1
+				sleep 1 3>- &
 				echo "started less than n seconds ago"
 			# Check if GitLab server has been started in the last 2 minutes, if no:
 			elif [ $(started_less_than_n_seconds_ago $RUNNER_TIMESTAMP_FILEPATH "$RUNNER_STARTUP_TIME_LIMIT") == "NO" ]; then
@@ -157,7 +157,7 @@ start_and_monitor_tor_connection(){
 		# Get tor connection status
 		tor_status_outside=$(get_tor_status)
 		echo "tor_status_outside=$tor_status_outside" >&2
-		sleep 1
+		sleep 1 3>- &
 		
 		# Reconnect tor if the system is disconnected
 		if [[ "$tor_status_outside" != *"Congratulations"* ]]; then

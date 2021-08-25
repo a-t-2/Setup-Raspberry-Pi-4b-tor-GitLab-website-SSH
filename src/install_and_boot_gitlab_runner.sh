@@ -150,15 +150,7 @@ start_gitlab_runner_service() {
 
 # Run GitLab runner service
 run_gitlab_runner_service() {
-	#run_command=$(sudo gitlab-runner run &)
-	#run_command=$(sudo gitlab-runner run --user=gitlab-runner &)
-	#run_command=$(sudo gitlab-runner run --user=gitlab-runner)
-	#( run_command="$(sudo gitlab-runner run)" ) &
 	output=$(nohup sudo gitlab-runner run &>/dev/null &)
-	#( run_command="$(gitlab-runner run)" ) &
-	#run_command=$(nohup sudo gitlab-runner run > gitlab_runner_run.out &)
-	#run_command=$(nohup sudo gitlab-runner run --user=gitlab-runner &)
-	echo "service is running"
 }
 
 #https://stackoverflow.com/questions/64257998/gitlab-ci-pipeline-fails-to-run
