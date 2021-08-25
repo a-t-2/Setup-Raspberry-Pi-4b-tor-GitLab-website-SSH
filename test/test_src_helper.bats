@@ -5,7 +5,9 @@ load 'libs/bats-assert/load'
 
 
 source src/helper.sh
+source src/install_and_boot_gitlab_server.sh
 source test/helper.sh
+
 source src/hardcoded_variables.txt
 source test/hardcoded_testdata.txt
 
@@ -194,6 +196,55 @@ source test/hardcoded_testdata.txt
 	
 	actual_result=$(get_last_line_of_set_of_lines "\${lines}")
 	EXPECTED_OUTPUT="sometoken"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+@test "Check if the Docker image identifier is retrieved correctly from the full Docker image name." {
+	get_docker_image_identifier
+	gitlab_package="gitlab/gitlab-ce:latest"
+	
+	docker_image_identifier=$(get_docker_image_identifier "$gitlab_package")
+	
+	EXPECTED_OUTPUT="gitlab"
+		
+	assert_equal "$docker_image_identifier" "$EXPECTED_OUTPUT"
+}
+
+
+
+@test "Docker image name is recognised correctly." {
+	# Get Docker image name
+	docker_image_name=$(get_gitlab_package)
+	
+	# Get Docker container id
+	docker_container_id=$(get_docker_container_id_of_gitlab_server)
+	
+	# Remove container if it is running
+	if [ -n "$docker_container_id" ]; then
+		
+		# Stop Gitlab Docker container
+		stopped=$(sudo docker stop "$docker_container_id")
+		
+		#remove_gitlab_package_docker "$docker_container_id"
+		removed=$(sudo docker rm $docker_container_id)
+	fi
+	
+	# Verify that the Docker image does not exist. 
+	actual_result=$(docker_image_exists "$docker_image_name")
+	assert_equal "$actual_result" "NO"
+	
+	# Start Docker service
+	output=$(sudo systemctl start docker)
+	
+	# Start GitLab Docker container
+	run_gitlab_docker
+	
+	# Get the docker image name
+	docker_image_name=$(get_gitlab_package)
+	
+	actual_result=$(docker_image_exists "$docker_image_name")
+	EXPECTED_OUTPUT="YES"
 		
 	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
 }

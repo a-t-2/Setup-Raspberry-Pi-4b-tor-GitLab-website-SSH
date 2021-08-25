@@ -159,12 +159,12 @@ get_first_line_containing_substring() {
 		else
 			#read -p "ERROR, did find the string in the file but did not find the line number, identification str =\${identification_str} And filecontent=$(cat $REL_FILEPATH)"
 			#exit 1
-			pass
+			true #equivalent of Python pass
 		fi
 	else
 		#read -p "ERROR, did not find the string in the file identification str =\${identification_str} And filecontent=$(cat $REL_FILEPATH)"
 		#exit 1
-		pass
+		true #equivalent of Python pass
 	fi
 }
 
@@ -201,7 +201,7 @@ get_docker_container_id_of_gitlab_server() {
 	# TODO: select gitlab_package substring rhs up to / (the sed command does not handle this well)
 	# TODO: OR replace / with \/ (that works)
 	identification_str=$(get_rhs_of_line_till_character "$gitlab_package" "/")
-
+	
 	# write output to file
 	output=$(sudo docker ps -a > $log_filepath)
 	# Get line with "gitlab/gitlab-ce:latest" (package name depending on architecture).
@@ -221,6 +221,10 @@ get_docker_container_id_of_gitlab_server() {
 	echo $container_id
 }
 
+get_docker_image_identifier() {
+	docker_image_name=$1
+	echo $(get_lhs_of_line_till_character "$docker_image_name" "/")
+}
 
 visudo_contains() {
 	line=$1
@@ -320,4 +324,18 @@ get_last_line_of_set_of_lines() {
 	nr_of_lines=${#var[@]}
 	last_line=$(get_line_by_nr_from_variable "$nr_of_lines" "\${lines}")
 	echo "$last_line"
+}
+
+docker_image_exists() {
+	image_name=$1
+	docker_image_identifier=$(get_docker_image_identifier "$gitlab_package")
+	
+	if [ "$(sudo docker ps -q -f name=$docker_image_identifier)" ]; then
+		echo "YES"
+	elif [ ! "$(sudo docker ps -q -f name=$docker_image_identifier)" ]; then
+		echo "NO"
+	else
+		echo "ERROR, the docker image was not not found, nor found."
+		exit 1
+	fi
 }

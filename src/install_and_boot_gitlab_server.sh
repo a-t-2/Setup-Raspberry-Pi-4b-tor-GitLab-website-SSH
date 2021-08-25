@@ -116,14 +116,22 @@ list_all_docker_containers() {
 # TODO: make into variable based on architecture
 stop_gitlab_package_docker() {
 	gitlab_package=$1
-	output=$(sudo docker stop $gitlab_package)
-	echo "$output"
+	
+	# Determine if $gitlab pacakge container exists, if yes stop it.
+	if [ "$(sudo docker ps -q -f name=$gitlab_package)" ]; then
+		output=$(sudo docker stop $gitlab_package)
+		echo "$output"
+	fi
 }
 
 remove_gitlab_package_docker() {
 	gitlab_package=$1
-	output=$(sudo docker rm $gitlab_package)
-	echo "$output"
+	read -p "REMOVING $gitlab_package"
+	if [ "$(sudo docker ps -q -f name=$gitlab_package)" ]; then
+		read -p "FOUND"
+		output=$(sudo docker rm $gitlab_package)
+		echo "$output"
+	fi
 }
 
 # Remove all containers
