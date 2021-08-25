@@ -113,13 +113,12 @@ list_all_docker_containers() {
 #	echo "$output"
 #}
 
-# TODO: make into variable based on architecture
+
 stop_gitlab_package_docker() {
 	# Get Docker container id
 	docker_container_id=$(get_docker_container_id_of_gitlab_server)
 	# Remove container if it is running
-	if [ -n "$docker_container_id" ]; then
-		
+	if [ -n "$docker_container_id" ]; then		
 		# Stop Gitlab Docker container
 		stopped=$(sudo docker stop "$docker_container_id")
 	fi
@@ -131,6 +130,9 @@ remove_gitlab_package_docker() {
 	docker_container_id=$(get_docker_container_id_of_gitlab_server)
 	# Remove container if it is running
 	if [ -n "$docker_container_id" ]; then
+		
+		# stop the container id if it is running
+		stop_gitlab_package_docker
 		
 		# Remove_gitlab_package_docker "$docker_container_id"
 		removed=$(sudo docker rm $docker_container_id)
