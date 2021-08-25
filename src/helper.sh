@@ -362,3 +362,114 @@ container_is_running() {
 		echo "NOTFOUND"
 	fi
 }
+
+# Returns "FOUND" if the service is found, NOTFOUND otherwise
+# TODO: write test for case when apache2 is actually running.
+apache2_is_running() {
+	status=$(sudo service apache2 --status-all)
+	echo $(lines_contain_string "unrecognized service" "\${status}")
+}
+
+
+# Returns "FOUND" if the service is found, NOTFOUND otherwise
+# TODO: write test for case when nginx is actually running.
+nginx_is_running() {
+
+	status=$(sudo service nginx --status-all)
+	echo $(lines_contain_string "unrecognized service" "\${status}")
+}
+
+
+
+
+
+####### STOP START SERVICES
+# Install docker:
+install_docker() {
+	output=$(yes | sudo apt install docker)
+	echo "$output"
+}
+
+install_docker_compose() {
+	output=$(yes | sudo apt install docker-compose)
+	echo "$output"
+}
+
+# Stop docker
+stop_docker() {
+	output=$(sudo systemctl stop docker)
+	echo "$output"
+}
+
+# start docker
+start_docker() {
+	output=$(sudo systemctl start docker)
+	echo "$output"
+}
+
+# Delete all existing gitlab containers
+# 0. First clear all relevant containres using their NAMES:
+list_all_docker_containers() {
+	output=$(sudo docker ps -a)
+	echo "$output"
+}
+
+stop_gitlab_package_docker() {
+	# Get Docker container id
+	docker_container_id=$(get_docker_container_id_of_gitlab_server)
+	# Remove container if it is running
+	if [ -n "$docker_container_id" ]; then		
+		# Stop Gitlab Docker container
+		stopped=$(sudo docker stop "$docker_container_id")
+	fi
+}
+
+remove_gitlab_package_docker() {
+	
+	# Get Docker container id
+	docker_container_id=$(get_docker_container_id_of_gitlab_server)
+	
+	# Remove container if it is running
+	if [ -n "$docker_container_id" ]; then
+		
+		# stop the container id if it is running
+		stop_gitlab_package_docker
+		
+		# Remove_gitlab_package_docker "$docker_container_id"
+		removed=$(sudo docker rm $docker_container_id)
+	fi
+}
+
+# Remove all containers
+remove_gitlab_docker_containers() {
+	# Get Docker container id
+	docker_container_id=$(get_docker_container_id_of_gitlab_server)
+	
+	# Remove container if it is running
+	if [ -n "$docker_container_id" ]; then
+	
+		output=$(sudo docker rm -f $docker_container_id)
+		echo "$output"
+	fi
+}
+
+
+# stop ngix service
+stop_apache_service() {
+	
+	if [ "$(apache2_is_running)" == "FOUND" ]; then
+		output=$(sudo service apache2 stop)
+		echo "$output"
+	fi
+}
+
+stop_nginx_service() {
+	output=$(sudo service nginx stop)
+	echo "$output"
+}
+
+# TODO: verify if it can be ommitted
+#stop_nginx() {
+#	output=$(sudo nginx -s stop)
+#	echo "$output"
+#}

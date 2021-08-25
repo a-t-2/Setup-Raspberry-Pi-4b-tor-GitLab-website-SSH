@@ -39,13 +39,6 @@ uninstall_gitlab_server() {
 }
 
 
-gitlab_server_is_running() {
-	# TODO: determine how to reliably determine if GitLabs server is running
-	gitlab_package=$1
-	echo "not_running"
-}
-
-
 # Install docker:
 uninstall_docker() {
 	output=$(yes | sudo apt remove docker)
@@ -54,48 +47,6 @@ uninstall_docker() {
 
 uninstall_docker_compose() {
 	output=$(yes | sudo apt remove docker-compose)
-	echo "$output"
-}
-
-# Stop docker
-stop_docker() {
-	output=$(sudo systemctl stop docker)
-	echo "$output"
-}
-
-stop_gitlab_package_docker() {
-	gitlab_package=$1
-	output=$(sudo docker stop $gitlab_package)
-	echo "$output"
-}
-
-remove_gitlab_package_docker() {
-	gitlab_package=$1
-	output=$(sudo docker rm $gitlab_package)
-	echo "$output"
-}
-
-# Remove all containers
-remove_gitlab_docker_containers() {
-	container_id=$(get_docker_container_id_of_gitlab_server)
-	output=$(sudo docker rm -f $container_id)
-	echo "$output"
-}
-
-
-# stop ngix service
-stop_apache_service() {
-	output=$(sudo service apache2 stop)
-	echo "$output"
-}
-
-stop_nginx_service() {
-	output=$(sudo service nginx stop)
-	echo "$output"
-}
-
-stop_nginx() {
-	output=$(sudo nginx -s stop)
 	echo "$output"
 }
 

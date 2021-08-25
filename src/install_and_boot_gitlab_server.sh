@@ -35,7 +35,7 @@ install_and_run_gitlab_server() {
 		remove_gitlab_docker_containers
 		stop_apache_service
 		stop_nginx_service
-		stop_nginx
+		#stop_nginx
 		run_gitlab_docker
 	fi
 }
@@ -46,121 +46,6 @@ create_log_folder() {
 
 create_gitlab_folder() {
 	mkdir -p $GITLAB_HOME
-}
-
-# Install docker:
-install_docker() {
-	output=$(yes | sudo apt install docker)
-	echo "$output"
-}
-
-install_docker_compose() {
-	output=$(yes | sudo apt install docker-compose)
-	echo "$output"
-}
-
-# Stop docker
-stop_docker() {
-	output=$(sudo systemctl stop docker)
-	echo "$output"
-}
-
-# start docker
-start_docker() {
-	output=$(sudo systemctl start docker)
-	echo "$output"
-}
-
-
-# Delete all existing gitlab containers
-# 0. First clear all relevant containres using their NAMES:
-list_all_docker_containers() {
-	output=$(sudo docker ps -a)
-	echo "$output"
-}
-#stop_gitlab_docker() {
-#	output=$(sudo docker stop gitlab)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#remove_gitlab_docker() {
-#	output=$(sudo docker rm gitlab)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#stop_gitlab_redis_docker() {
-#	output=$(sudo docker stop gitlab-redis)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#remove_gitlab_redis_docker() {
-#	output=$(sudo docker rm gitlab-redis)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#stop_gitlab_postgresql_docker() {
-#	output=$(sudo docker stop gitlab-postgresql)
-#	echo "$output"
-#}
-#
-## TODO: verify if this is necessary
-#remove_gitlab_postgresql_docker() {
-#	output=$(sudo docker rm gitlab-postgresql)
-#	echo "$output"
-#}
-
-
-stop_gitlab_package_docker() {
-	# Get Docker container id
-	docker_container_id=$(get_docker_container_id_of_gitlab_server)
-	# Remove container if it is running
-	if [ -n "$docker_container_id" ]; then		
-		# Stop Gitlab Docker container
-		stopped=$(sudo docker stop "$docker_container_id")
-	fi
-}
-
-remove_gitlab_package_docker() {
-	
-	# Get Docker container id
-	docker_container_id=$(get_docker_container_id_of_gitlab_server)
-	# Remove container if it is running
-	if [ -n "$docker_container_id" ]; then
-		
-		# stop the container id if it is running
-		stop_gitlab_package_docker
-		
-		# Remove_gitlab_package_docker "$docker_container_id"
-		removed=$(sudo docker rm $docker_container_id)
-	fi
-}
-
-# Remove all containers
-remove_gitlab_docker_containers() {
-	container_id=$(get_docker_container_id_of_gitlab_server)
-	output=$(sudo docker rm -f $container_id)
-	echo "$output"
-}
-
-
-# stop ngix service
-stop_apache_service() {
-	output=$(sudo service apache2 stop)
-	echo "$output"
-}
-
-stop_nginx_service() {
-	output=$(sudo service nginx stop)
-	echo "$output"
-}
-
-stop_nginx() {
-	output=$(sudo nginx -s stop)
-	echo "$output"
 }
 
 

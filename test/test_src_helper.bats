@@ -18,6 +18,15 @@ source test/hardcoded_testdata.txt
 #	assert_equal "$md5sum" "$EXPECTED_OUTPUT"
 #}
 
+@test "Verify apache2 is not found." {
+
+	actual_result=$(apache2_is_running)
+	EXPECTED_OUTPUT="NOTFOUND"
+		
+	assert_equal "$actual_result" "$EXPECTED_OUTPUT"
+}
+
+
 @test "Checking check_md5_sum." {
 	actual_output=$(check_md5_sum "42dbacaf348d3e48e5cde4fe84ef48b3" "test/static_file_with_spaces.txt")
 	md5sum=$(sudo md5sum "test/static_file_with_spaces.txt")
