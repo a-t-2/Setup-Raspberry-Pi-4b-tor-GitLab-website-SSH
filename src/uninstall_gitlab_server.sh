@@ -32,7 +32,7 @@ uninstall_gitlab_server() {
 	fi
 	stop_apache_service
 	stop_nginx_service
-	stop_nginx
+	#stop_nginx
 	if [ "$is_hard_uninstall" == true ]; then
 		delete_gitlab_folder
 	fi

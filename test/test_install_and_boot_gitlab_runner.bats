@@ -4,7 +4,6 @@ load 'libs/bats-support/load'
 load 'libs/bats-assert/load'
 
 source src/install_and_boot_gitlab_runner.sh
-#source src/helper.sh
 source test/helper.sh
 source test/hardcoded_testdata.txt
 
