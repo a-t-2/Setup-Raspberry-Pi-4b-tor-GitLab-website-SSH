@@ -339,3 +339,31 @@ docker_image_exists() {
 		exit 1
 	fi
 }
+
+
+# Returns FOUND if the container is running, returns NOTFOUND if it is not running
+container_is_running() {
+	# Get Docker container id
+	docker_container_id=$(get_docker_container_id_of_gitlab_server)
+	
+	# Get Docker image name
+	docker_image_name=$(get_gitlab_package)
+	
+	container_exists=$(docker_image_exists $docker_image_name)
+	#read -p "container_exists=$container_exists"
+	# if container does not exist, return NO
+	running_containers_output=$(sudo docker ps --filter status=running)
+	#running_containers_output=$(nohup sudo docker ps --filter status=running &>/dev/null &)
+	#echo "running_containers_output=$running_containers_output"
+	#echo "docker_container_id=$docker_container_id"
+	#echo "container_exists=$container_exists"
+	
+	if [ "$container_exists" == "NO" ]; then
+		echo "NOTFOUND"
+	elif [ "$container_exists" == "YES" ]; then
+		running_containers_output=$(sudo docker ps --filter status=running)
+	#	#echo -p "running_containers_output=$running_containers_output \n"
+	#	#echo -p "docker_container_id=$docker_container_id \n"
+		echo $(lines_contain_string "$docker_container_id" "\${running_containers_output}")
+	fi
+}
