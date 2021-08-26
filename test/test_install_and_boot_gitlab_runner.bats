@@ -21,25 +21,8 @@ setup() {
 
 #TODO: test if the install_gitlab_runner() { returns error if an unsupported architecture is included.
 
-
-@test "Test download website." {
-	COMMAND_OUTPUT=$(extract_runner_token_from_source)
-	EXPECTED_OUTPUT=""
 	
-	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
-}
 
-	
-#@test "Verifying the downloading of the GitLab Runner installer package." {
-#	architecture=$(get_architecture)
-#	COMMAND_OUTPUT=$(get_runner_package "$architecture")
-#	EXPECTED_OUTPUT=""
-#	
-#	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
-#}
-# TODO: test if file is curled (exists)
-# TODO: test if the file is made runnable
-# TODO: test md5sum (is correct)
 
 
 @test "Checking if GitLab Runner installation was succesfull." {

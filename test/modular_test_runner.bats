@@ -37,3 +37,15 @@ source src/hardcoded_variables.txt
 	is_running=$(check_for_n_seconds_if_gitlab_server_is_running "300")
 	assert_equal "$is_running" "RUNNING"
 }
+
+#@test "Verifying the downloading of the GitLab Runner installer package." {
+#	architecture=$(get_architecture)
+#	COMMAND_OUTPUT=$(get_runner_package "$architecture")
+#	EXPECTED_OUTPUT=""
+#	
+#	assert_equal "$COMMAND_OUTPUT" "$EXPECTED_OUTPUT"
+#}
+# TODO: test if file is curled (exists)
+# TODO: test if the file is made runnable
+# TODO: test md5sum (is correct)
+
