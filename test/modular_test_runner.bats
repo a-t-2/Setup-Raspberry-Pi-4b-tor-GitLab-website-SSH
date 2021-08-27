@@ -139,12 +139,18 @@ setup() {
 
 
 @test "Test if the GitLab Runner CI service is running correctly." {
+	arch=$(get_architecture)
+	
 	# Run the GitLab runner service installer completely
-	#+ TODO: instead of running complete installer, 
-	#+ run the required methods up to this point and then
-	#+ uninstall the GitLab Runner after the test again.
-	#+ repeat that non-general/test-specific method for each test.
-	install_gitlab_runner_output=$(install_and_run_gitlab_runner)
+	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
+		get_runner_package $arch
+		install_package $arch
+		register_gitlab_runner
+		create_gitlab_ci_user
+		install_gitlab_runner_service
+		start_gitlab_runner_service
+		#run_gitlab_runner_service
+	fi
 	
 	# Get GitLab Runner status:
 	status=$(sudo gitlab-runner status)
