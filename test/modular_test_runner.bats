@@ -6,6 +6,7 @@ load 'libs/bats-file/load'
 
 source src/install_and_boot_gitlab_server.sh
 source src/install_and_boot_gitlab_runner.sh
+source src/uninstall_gitlab_runner.sh
 source src/helper.sh
 source src/hardcoded_variables.txt
 
@@ -35,6 +36,9 @@ setup() {
 		# Install GitLab runner
 		#install_and_run_gitlab_server
 	fi
+	
+	# Uninstall GitLab runner
+	uninstall_gitlab_runner
 }
 
 
@@ -133,20 +137,27 @@ setup() {
 #	assert_equal "$output" "$EXPECTED_OUTPUT"
 #}
 ## TODO: determine how one can verify whether the GitLab Runner CI service is started correctly.
-#
-#
-#@test "Test if the GitLab Runner CI service is running correctly." {
-#	#run_service_output=$(run_gitlab_runner_service)
-#	#run_service_output=run_gitlab_runner_service
-#	run_gitlab_runner_service
-#	EXPECTED_OUTPUT="service is running"
-#		
-#	assert_equal "$run_service_output" "$EXPECTED_OUTPUT"
-#}
+
+
+@test "Test if the GitLab Runner CI service is running correctly." {
+	# Run the GitLab runner service installer completely
+	#+ TODO: instead of running complete installer, 
+	#+ run the required methods up to this point and then
+	#+ uninstall the GitLab Runner after the test again.
+	#+ repeat that non-general/test-specific method for each test.
+	install_gitlab_runner_output=$(install_and_run_gitlab_runner)
+	
+	# Get GitLab Runner status:
+	status=$(sudo gitlab-runner status)
+	
+	EXPECTED_OUTPUT="gitlab-runner: Service is running"
+		
+	assert_equal "$status" "$EXPECTED_OUTPUT"
+}
 ## TODO: determine how one can verify whether the GitLab Runner CI service is running correctly.
-#
-#
-#
-#@test "Trivial test." {
-#	assert_equal "True" "True"
-#}
+
+
+
+@test "Trivial test." {
+	assert_equal "True" "True"
+}

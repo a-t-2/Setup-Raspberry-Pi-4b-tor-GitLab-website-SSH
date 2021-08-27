@@ -7,7 +7,7 @@ source src/helper.sh
 source src/install_and_boot_gitlab_runner.sh
 
 uninstall_gitlab_runner() {
-	arch=$1
+	arch=$(get_architecture)
 	# TODO: verify if architecture is supported, raise error if not
 	# TODO: Mention that support for the architecture can be gained by
 	# downloading the right GitLab Runner installation package and adding
