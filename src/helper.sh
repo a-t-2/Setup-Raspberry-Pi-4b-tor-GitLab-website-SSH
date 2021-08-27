@@ -402,6 +402,7 @@ stop_docker() {
 # start docker
 start_docker() {
 	output=$(sudo systemctl start docker)
+	#output=$(systemctl reset-failed docker.service)
 	echo "$output"
 }
 

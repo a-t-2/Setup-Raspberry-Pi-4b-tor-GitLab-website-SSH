@@ -18,9 +18,7 @@ install_and_run_gitlab_runner() {
 	
 	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
 		get_runner_package $arch
-		#read -p "got package"
 		install_package $arch
-		#read -p "installed package"
 		register_gitlab_runner
 		create_gitlab_ci_user
 		install_gitlab_runner_service
