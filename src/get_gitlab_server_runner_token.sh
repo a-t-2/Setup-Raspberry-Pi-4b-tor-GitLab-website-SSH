@@ -81,7 +81,10 @@ get_registration_token_with_python() {
 	conda_environments=$(conda env list) 
 	
 	if [ $(lines_contain_string "$CONDA_ENVIRONMENT_NAME" "\${conda_environments}") == "FOUND" ]; then
-		cd get-gitlab-runner-registration-token && conda activate "batch_copy_issues" && python -m code.project1.src
+		#cd get-gitlab-runner-registration-token && conda activate batch_copy_issues && python -m code.project1.src
+		#cd get-gitlab-runner-registration-token && conda activate "batch_copy_issues" && python -m code.project1.src
+		cd get-gitlab-runner-registration-token && source activate base && conda activate batch_copy_issues && python -m code.project1.src
+		# eval $(conda shell.bash hook)
 	else
 		cd get-gitlab-runner-registration-token && conda env create --file environment.yml && conda activate batch_copy_issues && python -m code.project1.src
 	fi
@@ -95,7 +98,7 @@ download_repository() {
 	git_username=$1
 	reponame=$2
 	repo_url="https://github.com/"$git_username"/"$reponame".git"
-	echo "repo_url=$repo_url"
+	#echo "repo_url=$repo_url"
 	if [ ! -d "$reponame" ]; then
 		git clone $repo_url &&
 		set +e

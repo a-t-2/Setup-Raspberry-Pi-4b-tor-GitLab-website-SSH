@@ -21,3 +21,4 @@ RUNNER_STARTUP_TIME_LIMIT=200
 RUNNER_REGISTRATION_TOKEN_FILEPATH=src/runner_registration_token.txt
 CONDA_ENVIRONMENT_NAME=batch_copy_issues
 REPONAME_GET_RUNNER_TOKEN_PYTHON="get-gitlab-runner-registration-token"
+RUNNER_USERNAME="gitlab-runner"

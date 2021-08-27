@@ -385,6 +385,12 @@ nginx_is_running() {
 ####### STOP START SERVICES
 # Install docker:
 install_docker() {
+	# If one gets warning: 
+	#+  dpkg: warning: ignoring request to remove gitlab-runner_amd64 which isn't installed
+	#+ it can be resolved by re-installing GitLab-runner. This can be done with:
+	# sudo dpkg -i gitlab-runner.deb
+	#+ Same if the sudo apt install docker-compose command throws an error saying
+	#+ need gitlab runner to be re-installed but can't find the package.
 	output=$(yes | sudo apt install docker)
 	echo "$output"
 }

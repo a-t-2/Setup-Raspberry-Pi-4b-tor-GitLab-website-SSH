@@ -53,13 +53,11 @@ deregister_gitlab_runner() {
 # Create a GitLab CI user
 # TODO: specify which user
 remove_gitlab_ci_user() {
-	#sudo userdel gitlab-runner
-	gitlab_username=gitlab-runner
 	
 	# get list of users
 	user_list=$(awk -F: '{ print $1}' /etc/passwd)
-	if [  "$(lines_contain_string "$gitlab_username" "\${user_list}")" == "FOUND" ]; then
-		output=$(sudo userdel -r -f "$gitlab_username")
+	if [  "$(lines_contain_string "$RUNNER_USERNAME" "\${user_list}")" == "FOUND" ]; then
+		output=$(sudo userdel -r -f "$RUNNER_USERNAME")
 	fi
 }
 

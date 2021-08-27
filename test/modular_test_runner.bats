@@ -137,6 +137,29 @@ setup() {
 #}
 ## TODO: determine how one can verify whether the GitLab Runner CI service is started correctly.
 
+# WORKS!
+#@test "Test if the GitLab Runner CI service is started correctly." {
+#	arch=$(get_architecture)
+#	
+#	# Run the GitLab runner service installer completely
+#	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
+#		get_runner_package $arch
+#		install_package $arch
+#		register_gitlab_runner
+#		create_gitlab_ci_user
+#		install_gitlab_runner_service
+#		start_gitlab_runner_service
+#		#run_gitlab_runner_service
+#	fi
+#	
+#	# Get GitLab Runner status:
+#	status=$(sudo gitlab-runner status)
+#	
+#	EXPECTED_OUTPUT="gitlab-runner: Service is running"
+#		
+#	assert_equal "$status" "$EXPECTED_OUTPUT"
+#}
+
 
 @test "Test if the GitLab Runner CI service is running correctly." {
 	arch=$(get_architecture)
@@ -149,7 +172,7 @@ setup() {
 		create_gitlab_ci_user
 		install_gitlab_runner_service
 		start_gitlab_runner_service
-		#run_gitlab_runner_service
+		run_gitlab_runner_service
 	fi
 	
 	# Get GitLab Runner status:
@@ -160,7 +183,6 @@ setup() {
 	assert_equal "$status" "$EXPECTED_OUTPUT"
 }
 ## TODO: determine how one can verify whether the GitLab Runner CI service is running correctly.
-
 
 
 @test "Trivial test." {

@@ -114,22 +114,46 @@ register_gitlab_runner() {
 
 # Create a GitLab CI user
 create_gitlab_ci_user() {
-	sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+	# TODO: write check to see if user is already existent. Only add if it is not.
+	
+	# get list of users
+	user_list=$(awk -F: '{ print $1}' /etc/passwd)
+	#read -p  "RUNNER_USERNAME=$RUNNER_USERNAME"
+	#read -p  "user_list=$user_list"
+	if [  "$(lines_contain_string "$RUNNER_USERNAME" "\${user_list}")" == "NOTFOUND" ]; then
+		# To overcome:
+		#+    FATAL: Failed to install gitlab-runner: Init already exists: /etc/systemd/system/gitlab-runner.service 
+		#service_filepath="/etc/systemd/system/"$RUNNER_USERNAME".service"
+		#if [ ! -f "$service_filepath" ] ; then
+		if [  "$(gitlab_runner_service_is_installed)" == "NO" ]; then
+			#read -p  "SERVICE IS NOT FOUND RUNNING"
+			sudo useradd --comment 'GitLab Runner' --create-home "$RUNNER_USERNAME" --shell /bin/bash
+		fi
+	fi
 }
 
 
 # Install GitLab runner service
 install_gitlab_runner_service() {
-	gitlab_runner_username=gitlab-runner
-	$(sudo $gitlab_runner_username install --user=$gitlab_runner_username --working-directory=/home/$gitlab_runner_username)
-	$(sudo usermod -a -G sudo $gitlab_runner_username)
-	$(sudo rm /home/$gitlab_runner_username/.*)
 	
-	visudo_line="$gitlab_runner_username ALL=(ALL) NOPASSWD: ALL"
+	# only install service if it is not found yet:
+	user_list=$(awk -F: '{ print $1}' /etc/passwd)
+	#read -p  "RUNNER_USERNAME=$RUNNER_USERNAME"
+	#read -p  "user_list=$user_list"
+	if [  "$(lines_contain_string "$RUNNER_USERNAME" "\${user_list}")" == "NOTFOUND" ]; then
+		if [  "$(gitlab_runner_service_is_installed)" == "NO" ]; then
+			$(sudo $RUNNER_USERNAME install --user=$RUNNER_USERNAME --working-directory=/home/$RUNNER_USERNAME)
+		fi
+	fi
+	$(sudo usermod -a -G sudo $RUNNER_USERNAME)
+	# TODO: determine why this folder should be removed after installing the service (instead of before).
+	#$(sudo rm -r /home/$RUNNER_USERNAME/.*)
+	
+	visudo_line="$RUNNER_USERNAME ALL=(ALL) NOPASSWD: ALL"
 	filepath="/etc/sudoers"
 	added_runner_to_visudo=$(visudo_contains "$visudo_line" "$filepath")
 	if [  "$added_runner_to_visudo" == "NOTFOUND" ]; then
-		echo "$gitlab_runner_username ALL=(ALL) NOPASSWD: ALL" | sudo EDITOR='tee -a' visudo
+		echo "$RUNNER_USERNAME ALL=(ALL) NOPASSWD: ALL" | sudo EDITOR='tee -a' visudo
 		added_runner_to_visudo=$(visudo_contains "$visudo_line" "$filepath")
 		if [  "$added_runner_to_visudo" == "NOTFOUND" ]; then
 			# TODO: raise exception
