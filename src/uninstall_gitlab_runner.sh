@@ -55,22 +55,30 @@ deregister_gitlab_runner() {
 remove_gitlab_ci_user() {
 	#sudo userdel gitlab-runner
 	gitlab_username=gitlab-runner
-	output=$(sudo userdel -r -f "$gitlab_username")
-	#read -p "output=$output" >&2
+	
+	# get list of users
+	user_list=$(awk -F: '{ print $1}' /etc/passwd)
+	if [  "$(lines_contain_string "$gitlab_username" "\${user_list}")" == "FOUND" ]; then
+		output=$(sudo userdel -r -f "$gitlab_username")
+	fi
 }
 
 
 # Install GitLab runner service
 # TODO: specify which service
 uninstall_gitlab_runner_service() {
-	sudo gitlab-runner uninstall
+	if [  "$(gitlab_runner_service_is_installed)" == "YES" ]; then
+		sudo gitlab-runner uninstall
+	fi
 }
 
 
 # Start GitLab runner service
 # TODO: specify which service
 stop_gitlab_runner_service() {
-	sudo gitlab-runner stop
+	if [  "$(gitlab_runner_is_running)" == "RUNNING" ]; then
+		sudo gitlab-runner stop
+	fi
 }
 
 

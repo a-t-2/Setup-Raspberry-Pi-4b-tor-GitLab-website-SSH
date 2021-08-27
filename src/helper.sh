@@ -280,6 +280,7 @@ gitlab_server_is_running() {
 	fi
 }
 
+# Echo's "RUNNING" if the GitLab runner service is running, "NOTRUNNING" otherwise.
 gitlab_runner_is_running() {
 	actual_result=$(check_gitlab_runner_status)
 	EXPECTED_OUTPUT="gitlab-runner: Service is running"
@@ -472,3 +473,14 @@ stop_nginx_service() {
 #	output=$(sudo nginx -s stop)
 #	echo "$output"
 #}
+
+# Echo's "NO" if the GitLab Runner is not installed, "YES" otherwise.
+#+ TODO: Write test for this function in "modular-test_runner.bats".
+gitlab_runner_service_is_installed() {
+	gitlab_runner_service_status=$( { sudo gitlab-runner status; } 2>&1 )
+	if [  "$(lines_contain_string "gitlab-runner: the service is not installed" "\${gitlab_runner_service_status}")" == "FOUND" ]; then
+		echo "NO"
+	else
+		echo "YES"
+	fi
+}
