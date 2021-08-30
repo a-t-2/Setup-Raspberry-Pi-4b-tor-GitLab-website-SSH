@@ -1,0 +1,6 @@
+test:pytest:36:
+  image: python:3.6
+  script:
+    - whoami
+    - sudo apt-get install python
+    - pytest

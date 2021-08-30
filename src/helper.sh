@@ -482,11 +482,16 @@ stop_nginx_service() {
 
 # Echo's "NO" if the GitLab Runner is not installed, "YES" otherwise.
 #+ TODO: Write test for this function in "modular-test_runner.bats".
+#+ TODO: Verify the YES command is returned correctly when the GitLab runner is installed.
 gitlab_runner_service_is_installed() {
 	gitlab_runner_service_status=$( { sudo gitlab-runner status; } 2>&1 )
 	if [  "$(lines_contain_string "gitlab-runner: the service is not installed" "\${gitlab_runner_service_status}")" == "FOUND" ]; then
 		echo "NO"
-	else
+	elif [  "$(lines_contain_string "gitlab-runner: service in failed state" "\${gitlab_runner_service_status}")" == "FOUND" ]; then
+		echo "FAILED_STATE"
+	elif [  "$(lines_contain_string "gitlab-runner: service is installed" "\${gitlab_runner_service_status}")" == "FOUND" ]; then
 		echo "YES"
+	else
+		echo "ERROR, the \n sudo gitlab-runner status\n was not as expected. Please run that command to see what its output is."
 	fi
 }

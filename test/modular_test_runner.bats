@@ -116,7 +116,7 @@ setup() {
 ## TODO: First remove the user account that is used for this runner, then verify it is removed, then verify it is added
 ## TODO: determine how one can verify whether a sudo user account is created for the GitLab Runner CI
 
-
+# TODO: Probably remove this test and make it consistent with the series of consecutive tests that test each method of the GitLab runner function separately.
 #@test "Verify the GitLab Runner CI service is installed correctly." {
 #	# First uninstall the service:
 #	uninstall_output=$(sudo gitlab-runner uninstall)
@@ -138,7 +138,10 @@ setup() {
 #}
 ## TODO: determine how one can verify whether the GitLab Runner CI service is started correctly.
 
-# WORKS
+
+# WORKS, 
+#+ TODO: create separate test for "register_gitlab_runner" command.
+#+ TODO: Change the before all, to before each to make sure the test starts from the beginning for this test (otherwise, only one test can be used per run).
 #@test "Test if the GitLab Runner CI runner is registered correctly." {
 #	arch=$(get_architecture)
 #	
@@ -158,7 +161,9 @@ setup() {
 #	assert_equal "$status" "$EXPECTED_OUTPUT"	
 #}
 
-## Works
+# WORKS, 
+#+ TODO: create separate test for "create_gitlab_ci_user" command.
+#+ TODO: Change the before all, to before each to make sure the test starts from the beginning for this test (otherwise, only one test can be used per run).
 #@test "Test if the GitLab Runner CI runner is registered and maintained in the runner overview, after gitlab user is created." {
 #	arch=$(get_architecture)
 #	
@@ -179,7 +184,9 @@ setup() {
 #	assert_equal "$status" "$EXPECTED_OUTPUT"	
 #}
 
-## WZORKS
+# Works
+#+ TODO: create separate test for "install_gitlab_runner_service" command.
+#+ TODO: Change the before all, to before each to make sure the test starts from the beginning for this test (otherwise, only one test can be used per run).
 #@test "Test if the GitLab Runner CI runner is registered and maintained in the runner overview, after install_gitlab_runner_service." {
 #	arch=$(get_architecture)
 #	
@@ -201,30 +208,9 @@ setup() {
 #	assert_equal "$status" "$EXPECTED_OUTPUT"	
 #}
 
-## WORKS 
-#@test "Test if the GitLab Runner CI runner is registered and maintained in the runner overview, after start_gitlab_runner_service." {
-#	arch=$(get_architecture)
-#	
-#	# Run the GitLab runner service installer completely
-#	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
-#		get_runner_package $arch
-#		install_package $arch
-#		register_gitlab_runner
-#		create_gitlab_ci_user
-#		install_gitlab_runner_service
-#		start_gitlab_runner_service
-#	fi
-#	
-#	# Get GitLab Runner status:
-#	status=$(sudo gitlab-runner status)
-#	
-#	
-#	EXPECTED_OUTPUT="gitlab-runner: Service is running"
-#		
-#	assert_equal "$status" "$EXPECTED_OUTPUT"	
-#}
-
-# 
+# WORKS
+#+ TODO: create separate test for "start_gitlab_runner_service" command.
+#+ TODO: Change the before all, to before each to make sure the test starts from the beginning for this test (otherwise, only one test can be used per run).
 @test "Test if the GitLab Runner CI runner is registered and maintained in the runner overview, after start_gitlab_runner_service." {
 	arch=$(get_architecture)
 	
@@ -248,6 +234,7 @@ setup() {
 }
 
 # WORKS!
+#+ TODO: Change the before all, to before each to make sure the test starts from the beginning for this test (otherwise, only one test can be used per run).
 #@test "Test if the GitLab Runner CI service is started correctly." {
 #	arch=$(get_architecture)
 #	
@@ -270,7 +257,8 @@ setup() {
 #	assert_equal "$status" "$EXPECTED_OUTPUT"
 #}
 
-# THE RUN COMMAND HANGS,otherwise it should work
+# THE RUN COMMAND HANGS
+# TODO: ensure the run command does not result in an infinite wait.
 #@test "Test if the GitLab Runner CI service is running correctly." {
 #	arch=$(get_architecture)
 #	
@@ -297,6 +285,7 @@ setup() {
 ### TODO: determine how one can verify whether the GitLab Runner CI service is running correctly.
 
 
-#@test "Trivial test." {
-#	assert_equal "True" "True"
-#}
+
+@test "Trivial test." {
+	assert_equal "True" "True"
+}
