@@ -75,6 +75,7 @@ install_package() {
 #TODO: reverse installation
 
 
+# source src/install_and_boot_gitlab_runner.sh && register_gitlab_runner
 # Register GitLab Runner
 register_gitlab_runner() {
 
@@ -85,13 +86,14 @@ register_gitlab_runner() {
 	# http://127.0.0.1/admin/runners
 	# TODO: automatically get runner token from gitlab server
 	
-	url="http://localhost"
+	#url="http://localhost"
+	gitlab_url="http://127.0.0.1"
 	description=trucolrunner
 	executor=shell
 	dockerimage="ruby:2.6"
 	output=$(get_gitlab_server_runner_tokenV1)
 	runner_token=$(get_last_line_of_set_of_lines "\${output}")
-	
+	echo "runner_token=$runner_token"
 	# Command to run runner in Docker (won't access the machine localhost this way/doesn't work).
 	#registration=$(sudo gitlab-runner register \
 	#--non-interactive \
@@ -106,12 +108,16 @@ register_gitlab_runner() {
 	# TODO: verify it works without clone-url
 	register=$(sudo gitlab-runner register \
 	--non-interactive \
-	--url http://localhost \
+	--url "$gitlab_url" \
 	--description $description \
-	--registration-token $runner_token \
+	--registration-token "$runner_token" \
 	--executor $executor)
+	
+	#export runner_token=$(cat src/runner_registration_token.txt)
+	# sudo gitlab-runner register --non-interactive --url http://127.0.0.1 --description trucolrunner --registration-token $runner_token --executor shell
 }
 
+#source src/install_and_boot_gitlab_runner.sh && create_gitlab_ci_user
 # Create a GitLab CI user
 create_gitlab_ci_user() {
 	# TODO: write check to see if user is already existent. Only add if it is not.
@@ -133,6 +139,7 @@ create_gitlab_ci_user() {
 }
 
 
+# source src/install_and_boot_gitlab_runner.sh && install_gitlab_runner_service
 # Install GitLab runner service
 install_gitlab_runner_service() {
 	
@@ -142,7 +149,8 @@ install_gitlab_runner_service() {
 	#read -p  "user_list=$user_list"
 	if [  "$(lines_contain_string "$RUNNER_USERNAME" "\${user_list}")" == "NOTFOUND" ]; then
 		if [  "$(gitlab_runner_service_is_installed)" == "NO" ]; then
-			$(sudo $RUNNER_USERNAME install --user=$RUNNER_USERNAME --working-directory=/home/$RUNNER_USERNAME)
+			#sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab_runner
+			$(sudo gitlab-runner install --user=$RUNNER_USERNAME --working-directory=/home/$RUNNER_USERNAME)
 		fi
 	fi
 	$(sudo usermod -a -G sudo $RUNNER_USERNAME)
