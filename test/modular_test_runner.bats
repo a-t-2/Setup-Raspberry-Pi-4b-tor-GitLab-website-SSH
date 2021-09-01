@@ -286,6 +286,6 @@ setup() {
 
 
 
-@test "Trivial test." {
-	assert_equal "True" "True"
-}
+#@test "Trivial test." {
+#	assert_equal "True" "True"
+#}

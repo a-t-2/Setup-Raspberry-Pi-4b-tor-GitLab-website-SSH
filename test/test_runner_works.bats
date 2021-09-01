@@ -46,7 +46,7 @@ setup() {
 #+ TODO:  (Probably), make sure the GitLab runner is running as well.
 @test "Test if the GitLab Runner CI runner is registered and maintained in the runner overview, after start_gitlab_runner_service." {
 	arch=$(get_architecture)
-	skip
+	#skip
 	
 	# Run the GitLab runner service installer completely
 	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then

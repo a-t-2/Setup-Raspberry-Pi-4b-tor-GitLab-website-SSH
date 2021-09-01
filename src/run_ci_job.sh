@@ -29,3 +29,13 @@ export_repo() {
 # Write function that removes test repository at GitLab account.
 # Write function that passes ssh credentials to root user.
 # Write function that adds the repository to the GitLab account.
+
+create_repository() {
+	# Create personal GitLab access token
+	create_gitlab_personal_access_token
+	
+	# Create repo named foo
+
+	curl -H "Content-Type:application/json" https://gitlab.com/api/v4/projects?private_token=foo -d "{ \"name\": \"$1\" }"
+
+}
