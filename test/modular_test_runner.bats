@@ -6,6 +6,7 @@ load 'libs/bats-file/load'
 
 source src/install_and_boot_gitlab_server.sh
 source src/install_and_boot_gitlab_runner.sh
+source src/run_ci_job.sh
 source src/uninstall_gitlab_runner.sh
 source src/helper.sh
 source src/hardcoded_variables.txt
@@ -224,6 +225,21 @@ setup() {
 		start_gitlab_runner_service
 	fi
 	
+	# Get GitLab Runner status:
+	status=$(sudo gitlab-runner status)
+	
+	
+	EXPECTED_OUTPUT="gitlab-runner: Service is running"
+		
+	assert_equal "$status" "$EXPECTED_OUTPUT"	
+}
+
+@test "Test if the GitLab Runner CI automatically evaluates the example repository to a succesfull build." {
+	
+	# Push the example repository to the GitLab server and verifiy the runner evaluates the build to be succesfull.
+	receipe
+	
+	# TODO: change to get the build status
 	# Get GitLab Runner status:
 	status=$(sudo gitlab-runner status)
 	
