@@ -2,6 +2,8 @@
 
 source src/helper.sh
 source src/hardcoded_variables.txt
+source src/creds.txt
+source src/create_personal_access_token.sh
 
 # source src/run_ci_job.sh && export_repo
 # Write function that exportis the test-repository to a separate external folder.
@@ -30,12 +32,29 @@ export_repo() {
 # Write function that passes ssh credentials to root user.
 # Write function that adds the repository to the GitLab account.
 
+#source src/run_ci_job.sh && create_repository
 create_repository() {
 	# Create personal GitLab access token
-	create_gitlab_personal_access_token
+	#create_gitlab_personal_access_token
 	
-	# Create repo named foo
+	# load personal_access_token
+	personal_access_token=$(echo $GITLAB_PERSONAL_ACCESS_TOKEN | tr -d '\r')
+	
+	# Create repo named foobar
+	repo_name=foobar
+	output=$(curl -H "Content-Type:application/json" http://127.0.0.1/api/v4/projects?private_token=$personal_access_token -d "{ \"name\": \"$repo_name\" }")
+	echo "output=$output"
+}
 
-	curl -H "Content-Type:application/json" https://gitlab.com/api/v4/projects?private_token=foo -d "{ \"name\": \"$1\" }"
-
+#source src/run_ci_job.sh && delete_repository
+delete_repository() {
+	# load personal_access_token
+	personal_access_token=$(echo $GITLAB_PERSONAL_ACCESS_TOKEN | tr -d '\r')
+	
+	# Create repo named foobar
+	gitlab_username="root"
+	repo_name="foobar"
+	
+	output=$(curl -H 'Content-Type: application/json' -H "Private-Token: $personal_access_token" -X DELETE http://127.0.0.1/api/v4/projects/$gitlab_username%2F$repo_name)
+	echo "output=$output"
 }
