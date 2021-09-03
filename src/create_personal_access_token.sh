@@ -25,14 +25,7 @@ create_gitlab_personal_access_token() {
 	token_name=$(echo $GITLAB_PERSONAL_ACCESS_TOKEN_NAME | tr -d '\r')
 	
 	# Source: https://gitlab.example.com/-/profile/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
-	
 	# Create a personal access token
-	#output="$(sudo docker exec -i $docker_container_id bash -c "gitlab-rails runner \"token = User.find_by_username('$gitlab_username').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automationtoken3'); token.set_token('token-string-here123'); token.save! \"")"
-	
-	#output="$(sudo docker exec -i $docker_container_id bash -c "gitlab-rails runner \"token = User.find_by_username('$gitlab_username').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: '$token_name'); token.set_token('token-string-here123'); token.save! \"")"
-	
-	#output="$(sudo docker exec -i $docker_container_id bash -c "gitlab-rails runner \"token = User.find_by_username('$gitlab_username').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: '$token_name'); token.set_token('$personal_access_token'); token.save! \"")"
-	
 	# TODO: limit scope to only required scope
 	# https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
 	output="$(sudo docker exec -i $docker_container_id bash -c "gitlab-rails runner \"token = User.find_by_username('$gitlab_username').personal_access_tokens.create(scopes: [:api], name: '$token_name'); token.set_token('$personal_access_token'); token.save! \"")"
