@@ -220,9 +220,9 @@ setup() {
 		get_runner_package $arch
 		install_package $arch
 		register_gitlab_runner
-		create_gitlab_ci_user
-		install_gitlab_runner_service
-		start_gitlab_runner_service
+		#create_gitlab_ci_user
+		#install_gitlab_runner_service
+		#start_gitlab_runner_service
 	fi
 	
 	# Get GitLab Runner status:

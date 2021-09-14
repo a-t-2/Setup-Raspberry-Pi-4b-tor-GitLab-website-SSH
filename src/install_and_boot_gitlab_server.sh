@@ -37,6 +37,27 @@ install_and_run_gitlab_server() {
 		stop_nginx_service
 		#stop_nginx
 		run_gitlab_docker
+		verify_gitlab_server_status $SERVER_STARTUP_TIME_LIMIT
+	fi
+}
+
+# Runs for $duration [seconds] and checks whether the GitLab server status is: RUNNING.
+# Throws an error and terminates the code if the GitLab server status is not found to be
+# running within $duration [seconds]
+#TODO remove this duplicate, use helper check_for_n_seconds_if_gitlab_server_is_running
+verify_gitlab_server_status() {
+	duration=$1
+	running="false"
+	end=$(("$SECONDS" + "$duration"))
+	while [ $SECONDS -lt $end ]; do
+		if [ $(gitlab_server_is_running | tail -1) == "RUNNING" ]; then
+			running="true"
+			echo "RUNNING"; break;
+		fi
+	done
+	if [ "$running" == "false" ]; then
+		echo "ERROR, did not find the GitLab server running within $duration seconds!"
+		exit 1
 	fi
 }
 

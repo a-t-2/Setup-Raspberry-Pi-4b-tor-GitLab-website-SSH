@@ -294,6 +294,9 @@ gitlab_runner_is_running() {
 # reconfigure:
 #sudo docker exec -i 4544ce711468 bash -c "gitlab-ctl reconfigure"
 
+# Runs for $duration [seconds] and checks whether the GitLab server status is: RUNNING.
+# Throws an error and terminates the code if the GitLab server status is not found to be
+# running within $duration [seconds]
 check_for_n_seconds_if_gitlab_server_is_running() {
 	duration=$1
 	running="false"
