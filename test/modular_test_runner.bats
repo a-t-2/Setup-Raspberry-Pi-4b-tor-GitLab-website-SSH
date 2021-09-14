@@ -34,6 +34,9 @@ setup() {
 		# Verify GitLab server is running
 	
 		# Install GitLab runner
+		# TODO: either run this and test the results 
+		# OR create separate test files that each test a different cumulative step in the
+		# GitLab Runner installation process (latter preferred)
 		#install_and_run_gitlab_server
 	fi
 	
@@ -220,9 +223,9 @@ setup() {
 		get_runner_package $arch
 		install_package $arch
 		register_gitlab_runner
-		#create_gitlab_ci_user
-		#install_gitlab_runner_service
-		#start_gitlab_runner_service
+		create_gitlab_ci_user
+		install_gitlab_runner_service
+		start_gitlab_runner_service
 	fi
 	
 	# Get GitLab Runner status:
