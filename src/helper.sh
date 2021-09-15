@@ -1,5 +1,6 @@
 #!/bin/bash
 source src/hardcoded_variables.txt
+source src/creds.txt
 
 # Determine architecture of the machine on which this service is ran.
 # Source: https://askubuntu.com/questions/189640/how-to-find-architecture-of-my-pc-and-ubuntu
@@ -513,6 +514,10 @@ get_build_status() {
 	
 	# curl build status
 	output=$(curl --header "PRIVATE-TOKEN: $personal_access_token" "http://127.0.0.1/api/v4/projects/$gitlab_username%2F$repo_name/pipelines")
+	
+	#echo "gitlab_username=$gitlab_username"
+	#echo "output=$output"
+	#echo "repo_name=$repo_name"
 	
 	# Parse output to get build status
 	#"status":"success"
