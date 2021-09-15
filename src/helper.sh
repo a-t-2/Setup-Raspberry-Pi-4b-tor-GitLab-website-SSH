@@ -472,9 +472,14 @@ stop_apache_service() {
 	fi
 }
 
+#source src/helper.sh && stop_nginx_service
 stop_nginx_service() {
-	output=$(sudo service nginx stop)
-	echo "$output"
+	services_list=$(systemctl list-units --type=service)
+	if [  "$(lines_contain_string "nginx" "\${services_list}")" == "FOUND" ]; then
+		output=$(sudo service nginx stop)
+		echo "$output"
+	fi
+
 }
 
 # TODO: verify if it can be ommitted
