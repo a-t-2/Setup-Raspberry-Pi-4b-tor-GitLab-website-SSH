@@ -184,7 +184,8 @@ run_gitlab_runner_service() {
 	#output=$(nohup sudo gitlab-runner run &>/dev/null &) # causes tests to hang.
 	#run bash -c "src/./run_gitlab_runner.sh"
 	#run bash -c "./src/run_gitlab_runner.sh"
-	"./src/run_gitlab_runner.sh"
+	#"./src/run_gitlab_runner.sh"
+	"./src/run_gitlab_runner.sh" & disown
 }
 
 #https://stackoverflow.com/questions/64257998/gitlab-ci-pipeline-fails-to-run
