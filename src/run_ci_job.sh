@@ -12,9 +12,15 @@ source src/create_personal_access_token.sh
 # deleted or cloned/created.
 
 #source src/run_ci_job.sh && receipe
-receipe() {
+create_and_run_ci_job() {
 	delete_target_folder
-	delete_repository
+	# Create personal GitLab access token (it is hardcoded in this repo, but needs to
+	# be pushed/created in the GitLab server).
+	# TODO: re-enable
+	create_gitlab_personal_access_token
+	# TODO: https://github.com/TruCol/setup_your_own_GitLab_CI/issues/6
+	#delete_repository
+	#sleep 60
 	create_repository
 	clone_repository
 	export_repo
@@ -64,11 +70,8 @@ export_repo() {
 
 create_repository() {
 #source src/run_ci_job.sh && create_repository
-	# Create personal GitLab access token
-	# TODO: re-enable
-	#create_gitlab_personal_access_token
 	
-	# load personal_access_token
+	# load personal_access_token (from hardcoded data)
 	personal_access_token=$(echo $GITLAB_PERSONAL_ACCESS_TOKEN | tr -d '\r')
 	
 	# Create repo named foobar

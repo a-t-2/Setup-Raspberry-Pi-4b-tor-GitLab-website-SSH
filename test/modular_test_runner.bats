@@ -41,7 +41,8 @@ setup() {
 	fi
 	
 	# Uninstall GitLab runner
-	uninstall_gitlab_runner
+	# TODO: move uninstall_gitlab_runner to after test execution
+	#uninstall_gitlab_runner
 }
 
 
@@ -240,7 +241,7 @@ setup() {
 @test "Test if the GitLab Runner CI automatically evaluates the example repository to a succesfull build." {
 	
 	# Push the example repository to the GitLab server and verifiy the runner evaluates the build to be succesfull.
-	receipe
+	create_and_run_ci_job
 	
 	# TODO: change to get the build status
 	# Get GitLab Runner status:
