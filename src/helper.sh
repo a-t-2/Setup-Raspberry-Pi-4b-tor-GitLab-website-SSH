@@ -498,3 +498,20 @@ gitlab_runner_service_is_installed() {
 		echo "ERROR, the \n sudo gitlab-runner status\n was not as expected. Please run that command to see what its output is."
 	fi
 }
+
+#source src/helper.sh && get_build_status
+get_build_status() {
+	# load personal_access_token, gitlab username, repository name
+	personal_access_token=$(echo $GITLAB_PERSONAL_ACCESS_TOKEN | tr -d '\r')
+	gitlab_username=$(echo $gitlab_server_account | tr -d '\r')
+	repo_name=$SOURCE_FOLDERNAME
+	
+	# curl build status
+	output=$(curl --header "PRIVATE-TOKEN: $personal_access_token" "http://127.0.0.1/api/v4/projects/$gitlab_username%2F$repo_name/pipelines")
+	
+	# Parse output to get build status
+	#"status":"success"
+	expected_substring='"status":"success"'
+	actual_result=$(lines_contain_string "$expected_substring" "\${output}")
+	echo $actual_result
+}
