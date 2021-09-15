@@ -3,4 +3,4 @@ test:pytest:36:
   script:
     - whoami
     - sudo apt-get install python
-    - pytest
+    - python -m pytest
