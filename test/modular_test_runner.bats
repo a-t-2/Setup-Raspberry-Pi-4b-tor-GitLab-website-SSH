@@ -216,33 +216,33 @@ setup() {
 # WORKS
 #+ TODO: create separate test for "start_gitlab_runner_service" command.
 #+ TODO: Change the before all, to before each to make sure the test starts from the beginning for this test (otherwise, only one test can be used per run).
-########@test "Test if the GitLab Runner CI runner is registered and maintained in the runner overview, after start_gitlab_runner_service." {
-########	arch=$(get_architecture)
-########	
-########	# Run the GitLab runner service installer completely
-########	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
-########		get_runner_package $arch
-########		install_package $arch
-########		register_gitlab_runner
-########		create_gitlab_ci_user
-########		install_gitlab_runner_service
-########		start_gitlab_runner_service
-########		# TODO: remove
-########		run_gitlab_runner_service
-########	else
-########		# GitLab runner status is already: Running, just need to launch a runner
-########		# TODO: remove
-########		run_gitlab_runner_service
-########	fi
-########	
-########	# Get GitLab Runner status:
-########	status=$(sudo gitlab-runner status)
-########	
-########	
-########	EXPECTED_OUTPUT="gitlab-runner: Service is running"
-########		
-########	assert_equal "$status" "$EXPECTED_OUTPUT"	
-########}
+@test "Test if the GitLab Runner CI runner is registered and maintained in the runner overview, after start_gitlab_runner_service." {
+	arch=$(get_architecture)
+	
+	# Run the GitLab runner service installer completely
+	if [ $(gitlab_runner_is_running $arch) == "NOTRUNNING" ]; then
+		get_runner_package $arch
+		install_package $arch
+		register_gitlab_runner
+		create_gitlab_ci_user
+		install_gitlab_runner_service
+		start_gitlab_runner_service
+		# TODO: remove
+		run_gitlab_runner_service
+	else
+		# GitLab runner status is already: Running, just need to launch a runner
+		# TODO: remove
+		run_gitlab_runner_service
+	fi
+	
+	# Get GitLab Runner status:
+	status=$(sudo gitlab-runner status)
+	
+	
+	EXPECTED_OUTPUT="gitlab-runner: Service is running"
+		
+	assert_equal "$status" "$EXPECTED_OUTPUT"	
+}
 
 @test "Test if the GitLab Runner CI automatically evaluates the example repository to a succesfull build." {
 	
