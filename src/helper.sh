@@ -512,6 +512,8 @@ get_build_status() {
 	gitlab_username=$(echo $gitlab_server_account | tr -d '\r')
 	repo_name=$SOURCE_FOLDERNAME
 	
+	sleep 30
+	
 	# curl build status
 	output=$(curl --header "PRIVATE-TOKEN: $personal_access_token" "http://127.0.0.1/api/v4/projects/$gitlab_username%2F$repo_name/pipelines")
 	
@@ -520,8 +522,28 @@ get_build_status() {
 	#echo "repo_name=$repo_name"
 	
 	# Parse output to get build status
-	#"status":"success"
-	expected_substring='"status":"success"'
-	actual_result=$(lines_contain_string "$expected_substring" "\${output}")
-	echo $actual_result
+	
+	allowed_substring='"status":"pending"'
+	while [  "$(lines_contain_string "$allowed_substring" "\${output}")" == "FOUND" ]; do
+		sleep 3
+		output=$(curl --header "PRIVATE-TOKEN: $personal_access_token" "http://127.0.0.1/api/v4/projects/$gitlab_username%2F$repo_name/pipelines")
+	done
+	
+	allowed_substring='"status":"running"'
+	while [  "$(lines_contain_string "$allowed_substring" "\${output}")" == "FOUND" ]; do
+		sleep 3
+		output=$(curl --header "PRIVATE-TOKEN: $personal_access_token" "http://127.0.0.1/api/v4/projects/$gitlab_username%2F$repo_name/pipelines")
+	done
+	
+	# check if status has error: all build statusses are returned, so need to check the 
+	# first one, which represents the latest build.
+	# TODO: parse the highest id from output, and find the accompanying latest build status
+	failed_build='"status":"failed"'
+	if [  "$(lines_contain_string "$failed_build" "\${output}")" == "FOUND" ]; then
+		echo "NOTFOUND"
+	else
+		expected_substring='"status":"success"'
+		actual_result=$(lines_contain_string "$expected_substring" "\${output}")
+		echo $actual_result
+	fi
 }
