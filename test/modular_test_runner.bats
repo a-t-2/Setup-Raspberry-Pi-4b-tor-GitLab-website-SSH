@@ -227,6 +227,12 @@ setup() {
 		create_gitlab_ci_user
 		install_gitlab_runner_service
 		start_gitlab_runner_service
+		# TODO: remove
+		run_gitlab_runner_service
+	else
+		# GitLab runner status is already: Running, just need to launch a runner
+		# TODO: remove
+		run_gitlab_runner_service
 	fi
 	
 	# Get GitLab Runner status:
